@@ -13,6 +13,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     <>
       {/* Header */}
       <Box
+        id="top"
         sx={{
           p: 2,
           display: "flex",
