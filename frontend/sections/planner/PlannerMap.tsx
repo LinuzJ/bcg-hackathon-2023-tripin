@@ -22,6 +22,7 @@ import {
 import { MapPin, MapPinLine } from "@phosphor-icons/react";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
+import { LayoutGroup, motion } from "framer-motion";
 
 const dummyData = [
   {
@@ -58,11 +59,16 @@ const dummyData = [
 
 const PlannerMap: React.FC = () => {
   const [center, setCenter] = useState<LngLatLike>([6.953101, 50.935173]);
+  const [activeLocation, setActiveLocation] = useState<number>(0);
 
-  const [activeLocation, setActiveLocation] = useState<number | null>(null);
-
+  const handleActiveLocationChange = (data: any) => {
+    setActiveLocation(data.id);
+    setCenter([data.coordinates[1], data.coordinates[0]]);
+    document.getElementById("top").scrollIntoView({ behavior: "smooth" });
+  };
   return (
     <>
+      <div id="top" />
       <MapProvider>
         <Map center={center} />
       </MapProvider>
@@ -76,59 +82,65 @@ const PlannerMap: React.FC = () => {
           p: 2,
         }}
       >
-        <Stack spacing={2}>
+        <LayoutGroup>
           <Typography variant="h3">Travel Suggestions</Typography>
-          {dummyData.map((data) => (
-            <Card key={data.id}>
-              <CardActionArea
-                onClick={() =>
-                  setCenter([data.coordinates[1], data.coordinates[0]])
-                }
-                sx={{
-                  display: "flex",
-                  position: "relative",
-                  alignItems: "stretch",
-                  // border: "2px solid",
-                  borderColor: "primary.main",
-                }}
-              >
-                <Box
-                  sx={{ display: "flex", flexDirection: "column", flexGrow: 1 }}
-                >
-                  <CardHeader title={data.title} sx={{ py: 1, px: 2 }} />
-                  <CardContent sx={{ py: 1, px: 2 }}>
-                    <Typography
-                      variant="caption"
-                      component={"div"}
+          {dummyData
+            .sort((data) => (data.id == activeLocation ? -1 : 1))
+            .map((data) => (
+              <motion.div layout key={data.id}>
+                <Card>
+                  <CardActionArea
+                    onClick={() => handleActiveLocationChange(data)}
+                    sx={{
+                      display: "flex",
+                      position: "relative",
+                      alignItems: "stretch",
+                      // border: "2px solid",
+                      borderColor: "primary.main",
+                    }}
+                  >
+                    <Box
                       sx={{
-                        mb: 1,
-                        ...(data.carbonLevel == 0
-                          ? { color: "success.dark" }
-                          : { color: "warning.dark" }),
+                        display: "flex",
+                        flexDirection: "column",
+                        flexGrow: 1,
                       }}
                     >
-                      {data.carbonLevel == 0 ? "Low" : "Medium"} Carbon
-                      Footprint
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      sx={{ lineClamp: 4, boxOrient: "vertical" }}
-                    >
-                      {data.description.slice(0, 50)}...
-                    </Typography>
-                  </CardContent>
-                </Box>
-                <CardMedia>
-                  <Box
-                    component="img"
-                    sx={{ width: 150, height: 1 }}
-                    src={data.image}
-                  />
-                </CardMedia>
-              </CardActionArea>
-            </Card>
-          ))}
-        </Stack>
+                      <CardHeader title={data.title} sx={{ py: 1, px: 2 }} />
+                      <CardContent sx={{ py: 1, px: 2 }}>
+                        <Typography
+                          variant="caption"
+                          component={"div"}
+                          sx={{
+                            mb: 1,
+                            ...(data.carbonLevel == 0
+                              ? { color: "success.dark" }
+                              : { color: "warning.dark" }),
+                          }}
+                        >
+                          {data.carbonLevel == 0 ? "Low" : "Medium"} Carbon
+                          Footprint
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          sx={{ lineClamp: 4, boxOrient: "vertical" }}
+                        >
+                          {data.description.slice(0, 50)}...
+                        </Typography>
+                      </CardContent>
+                    </Box>
+                    <CardMedia>
+                      <Box
+                        component="img"
+                        sx={{ width: 150, height: 1 }}
+                        src={data.image}
+                      />
+                    </CardMedia>
+                  </CardActionArea>
+                </Card>
+              </motion.div>
+            ))}
+        </LayoutGroup>
       </Box>
     </>
   );
