@@ -5,9 +5,8 @@ app = Flask(__name__)
 
 
 @app.route('/generate-trips', methods=['POST'])
-def test():
-    # You can access the request data using request.json or request.form
-    data = request.json  # Assuming the data is in JSON format
+def trips():
+    data = request.json
 
     # Generate trips
     trips = generate_trips(data)
