@@ -1,19 +1,17 @@
 import openai
 import json
 
-
-
 openai.api_key = "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"
 
-agreed_input= {
-    "starting_position": "Dusseldorf",
-    "activity": "sporty",
-    "climate": "average",
-    "budget": 5000,
-    "time_of_year": "september",
-    "single_trip": 1,
-    "duration": 2
-}
+# agreed_input = {
+#     "starting_position": "Dusseldorf",
+#     "activity": "sporty",
+#     "climate": "average",
+#     "budget": 5000,
+#     "time_of_year": "september",
+#     "single_trip": 1,
+#     "duration": 2
+# }
 
 
 def fetch_trips(agreed_input):
@@ -26,7 +24,6 @@ def fetch_trips(agreed_input):
     duration = str(agreed_input["duration"])
     activity = agreed_input["activity"]
 
-
     # Create prompt
 
     output_json = [
@@ -34,7 +31,8 @@ def fetch_trips(agreed_input):
             "Destination": "xxx (string)",
             "Position": "[longitude, latitude] (float [])",
             "Transportation": "CAR/PLANE/TRAIN/BUS (string)",
-            "Description of activities": "Day 1: ... , Day 2: ..., ... (string)", # Add more days and activities as needed
+            # Add more days and activities as needed
+            "Description of activities": "Day 1: ... , Day 2: ..., ... (string)",
         }
     ]
     output_json_str = json.dumps(output_json, indent=4)
@@ -44,9 +42,9 @@ def fetch_trips(agreed_input):
     # Call OpenAPI
 
     response = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo",
-                messages=[{"role": "user", "content": f"{prompt}"}
-                ])
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": f"{prompt}"}
+                  ])
 
     output = response['choices'][0]['message']['content']
 
@@ -65,4 +63,5 @@ def fetch_trips(agreed_input):
 
     return output
 
-print(fetch_trips(agreed_input))
+
+# print(fetch_trips(agreed_input))
