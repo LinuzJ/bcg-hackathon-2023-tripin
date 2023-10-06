@@ -1,3 +1,4 @@
+import AnimatedLogo from "@/components/AnimatedLogo";
 import MainLayout from "@/layout/MainLayout";
 import Planner from "@/sections/planner";
 import { useTheme } from "@emotion/react";
@@ -15,6 +16,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       {/* <Hero /> */}
+      <AnimatedLogo />
       <MainLayout>
         <Planner />
         {/* <Map /> */}
