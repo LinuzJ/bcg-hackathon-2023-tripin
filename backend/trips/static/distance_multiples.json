@@ -1,7 +1,7 @@
 {
-    "car": 1.3,
-    "car_ev": 1.3,
-    "train": 1.1,
-    "plane_long": 1.0,
-    "plane_short": 1.0
+    "CAR": 1.3,
+    "CAR_EV": 1.3,
+    "TRAIN": 1.1,
+    "PLANE_LONG": 1.0,
+    "PLANE_SHORT": 1.0
 }
