@@ -2,73 +2,77 @@ import requests
 from datetime import datetime
 from utils.distance import get_distance
 
-def calculate_cost(start: tuple[float], end: tuple[float], travel_mode: str):
-    distance = get_distance(start, end, travel_mode)
-    if travel_mode == "CAR":
-        return _car_cost(distance, start, end)
+
+def calculate_cost(start: tuple[float], end: tuple[float], travel_mode: str, start_airport="JFK", end_airport="LAX"):
+    distance = get_distance(start[0], start[1], end[0], end[1], travel_mode)
+    if travel_mode == "DRIVE":
+        return _car_cost(distance)
     if travel_mode == "PLANE":
-        return _plane_cost(distance, start, end)
-    if travel_mode == "TRAIN":
-        return _train_cost(distance, start, end)
-    if travel_mode == "BUS":
+        return _plane_cost(start_airport, end_airport)
+    if travel_mode == "TRANSIT":
         return _train_cost(distance, start, end)
 
 
-def _car_cost(distance: float, start: tuple[float], end: tuple[float]) -> float:
+def _car_cost(distance: float) -> float:
     # Simple gas price * distance type calculation
-    return 1.0
+    return distance*1.5
 
 
 def _train_cost(distance: float, start: tuple[float], end: tuple[float]) -> float:
     # Utilize some external API to calculate train prices from location to destination
-    return 1.0
+    return distance*0.5
 
 
-def _plane_cost(distance: float, start: tuple[float], end: tuple[float]) -> float:
+def _plane_cost(start_airport, end_airport) -> float:
     # Utilize some external API to calculate flight prices from location to destination
-    start_airport = _get_closest_airport(start[0], start[1])
-    end_airport = _get_closest_airport(end[0], end[1])
+    # start_airport = _get_closest_airport(start[0], start[1])
+    # end_airport = _get_closest_airport(end[0], end[1])
+    # return _get_flight_prices(start_airport, end_airport, datetime.now().strftime('%Y-%m-%d'))
+    print("AIRPORT")
+    print(start_airport, end_airport)
+    price = _get_flight_prices(
+        start_airport, end_airport, datetime.now().strftime('%Y-%m-%d'))
+    
+    return price
 
-    prices = _get_flight_prices(start_airport, end_airport, datetime.now().strftime('%Y-%m-%d'))
-    print(prices)
-    return 1.0
 
 def _get_flight_prices(origin, destination, date):
-    url = "https://partners.api.skyscanner.net/apiservices/browsequotes/v1.0/US/USD/en-US/{}/{}/{}?apiKey=sh428739766321522266746152871799".format(origin, destination, date)
-    
+    base_url = "https://partners.api.skyscanner.net/apiservices/v3/flights/indicative/search"
+
     headers = {
-        "Accept": "application/json"
+        "x-api-key": "sh428739766321522266746152871799",
+        "Content-Type": "application/json"
     }
 
-    response = requests.get(url, headers=headers)
-    data = response.json()
-    print(data)
-    # Extract and return the prices (or any other data you need)
-    # This is a simplified extraction; the actual API response might be more complex
-    prices = [quote["MinPrice"] for quote in data.get("Quotes", [])]
-    return prices
-
-def _get_closest_airport(lat, lon):
-    base_url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
-    params = {
-        "location": f"{lat},{lon}",
-        "radius": 50000,  # Search within 50 km radius. You can adjust this value.
-        "type": "airport",
-        "key": "AIzaSyAWEPohy9CdHpz6j8-_zLDRsSWoDI9b2YU"
-    }
-    
-    response = requests.get(base_url, params=params)
-    data = response.json()
-
-    # Check if results are available
-    if data['status'] == 'OK':
-        # Take the first result as the closest airport
-        airport = data['results'][0]
-        return {
-            "name": airport['name'],
-            "address": airport.get('vicinity', ''),
-            "latitude": airport['geometry']['location']['lat'],
-            "longitude": airport['geometry']['location']['lng']
+    data = {
+        "query": {
+            "market": "UK",
+            "locale": "en-GB",
+            "currency": "GBP",
+            "queryLegs": [
+                {
+                    "originPlace": {
+                        "queryPlace": {
+                            "iata": origin # The IATA code for the "London Heathrow" airport
+                        }
+                    },
+                    "destinationPlace": {
+                        "queryPlace": {
+                            "iata": destination # The IATA code for the "London Heathrow" airport
+                        }
+                    },
+                    "anytime": True
+                }
+            ]
         }
-    else:
-        return None
+    }
+
+    response = requests.post(base_url, headers=headers, json=data)
+    data = response.json()["content"]
+    quotes = data['results']['quotes']
+
+    # Finding the cheapest quote based on minPrice
+    cheapest_quote = min(quotes.values(), key=lambda x: int(x['minPrice']['amount']))
+    cheapest_price = cheapest_quote['minPrice']['amount']
+    
+    return cheapest_price

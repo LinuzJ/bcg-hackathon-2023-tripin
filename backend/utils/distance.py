@@ -34,14 +34,20 @@ def get_maps_distance(start_lat, start_long, end_lat, end_long, travel_mode):
     response = requests.post(url, headers=headers, json=data).json()
     print("inputs : ", start_lat, start_long, end_lat, end_long, travel_mode)
     distance = response["routes"][0]["distanceMeters"]
-
+    
     return distance
 
 
-def get_distance(start: tuple[float], end: tuple[float], travel_mode: str):
-    start_lat, start_long = start[0], start[1]
-    end_lat, end_long = end[0], end[1]
+def get_distance(start_lat, start_long, end_lat, end_long, travel_mode: str):
 
-    calc_func = haversine_distance if travel_mode == "PLANE" else get_maps_distance
+    if travel_mode == "PLANE":
+        distance = haversine_distance(start_lat, start_long, end_lat, end_long)
+    else:
+        try:
+            distance = get_maps_distance(start_lat, start_long, end_lat, end_long)
+            print("GOOGLE")
+        except Exception:
+            print("FAAAAAILED")
+            distance = haversine_distance(start_lat, start_long, end_lat, end_long)*1.3
 
-    return calc_func(start_lat, start_long, end_lat, end_long, travel_mode)
+    return distance
