@@ -1,18 +1,18 @@
 import openai
 import json
 
-
+import random
 
 openai.api_key = "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"
 
 agreed_input= {
-    "starting_position": "Dusseldorf",
-    "activity": "sporty",
-    "climate": "average",
-    "budget": 5000,
-    "time_of_year": "september",
+    "starting_position": "Madrid",
+    "activity": "cultural",
+    "climate": "mountaineous",
+    "budget": "3000",
+    "time_of_year": "june",
     "single_trip": 1,
-    "duration": 2
+    "duration": 3
 }
 
 
@@ -25,21 +25,52 @@ def fetch_trips(agreed_input):
     climate = agreed_input["climate"]
     duration = str(agreed_input["duration"])
     activity = agreed_input["activity"]
+    duration_days = str(int(duration) * 7 - 1)
 
+    prompt =  f"Please output a python list with a list of 9 travel destinations according to my budget of {budget} Euros in {time_of_year} starting from {starting_position}. The trip should be to a {climate} climate and should last {duration} weeks. I want to do a mix of {activity} activities. Find activities according to my budget. \n Do this for 9 possible destinations, first 3 where we stay in the continent, then 3 to another continent, the last 3 as close as possible to our starting position(can be in the same country).\n Strict condition: the output should be exactly like this: [\"Destination 1\", \"Destination 2\", ..., \"Destination 9\"] \n\n Each destinations in the list is in the format \"Place,  Country\" \n"
+
+    response = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",
+                messages=[{"role": "user", "content": f"{prompt}"}
+                ])
+
+    output = response['choices'][0]['message']['content']
+
+    # Convert the string back to a Python list
+    destination_list = json.loads(output)
+
+    # Split destinations into three groups
+    first_three_destinations = destination_list[:3]
+    next_three_destinations = destination_list[3:6]
+    last_three_destinations = destination_list[6:]
+
+    # Randomly choose one destination from each group
+    random_first_destination = random.choice(first_three_destinations)
+    random_next_destination = random.choice(next_three_destinations)
+    random_last_destination = random.choice(last_three_destinations)
+
+    # Store the randomly chosen destinations in a variable
+    chosen_destinations = [random_first_destination, random_next_destination, random_last_destination]
+    str_chosen_destinations = str(chosen_destinations)
 
     # Create prompt
 
     output_json = [
         {
-            "Destination": "xxx (string)",
-            "Position": "[longitude, latitude] (float [])",
-            "Transportation": "CAR/PLANE/TRAIN/BUS (string)",
-            "Description of activities": "Day 1: ... , Day 2: ..., ... (string)", # Add more days and activities as needed
+            "trips": [
+            {
+            "destination": "... (string)",
+            "position": "[longitude, latitude] (float[] )",
+            "transportation": "CAR/PLANE/TRAIN/BUS (string)",
+            "description": f"Day 1: ... , Day 2: ... , Day 3: ..., Day 4: ..., ... (all remaining days, day by day) (string)",
+            }
+        ]
         }
     ]
+
     output_json_str = json.dumps(output_json, indent=4)
 
-    prompt = f"Please output a JSON file describing a trip and activities according to my budget of {budget} Euro in {time_of_year} starting from {starting_position}. The trip should be to a {climate} climate and should last {duration} weeks. I want to do a mix of {activity} activities. Find activities according to my budget.\nDo this for 9 possible destinations, first 3 where we stay in the continent, then 3 to another continent, the last 3 as close as possible(can be in the same country).\nStrict condition: Output it in exactly this JSON format:\n\n[{{\"Destination\", \"Position\", \"Transportation\", \"Description of activities\"}} , ...]\n, \"transportation\" should be only \"CAR\", \"PLANE\", \"TRAIN\", \"BUS\" \n Output Example JSON with the datatypes in brackets:\n{output_json_str} \n"
+    prompt = f"Please output only a JSON file describing a trip and activities according to my {budget} budget in {time_of_year} starting from {starting_position}. The trip should last {duration} weeks. I want to do a mix of {activity} activities. Find activities according to my budget. \n Do this for the following 3 destinations: {str_chosen_destinations} . \n I want activities for the complete {duration_days} days. \nStrict condition: Output it in exactly this JSON format:\n\n ”trips: [ {{\"destination: \", \"position: \", \"transportation: \", \"Description of activities: \"}}  , ...]\n \n \"transportation\" should be only \"CAR\", \"PLANE\", \"TRAIN\", \"BUS\" \n Output Example JSON with the datatypes in brackets:\n{output_json_str} \n"
 
     # Call OpenAPI
 
@@ -65,4 +96,6 @@ def fetch_trips(agreed_input):
 
     return output
 
+
+#fetch_trips(agreed_input)
 print(fetch_trips(agreed_input))
