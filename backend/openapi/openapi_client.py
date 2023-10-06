@@ -29,7 +29,7 @@ def fetch_trips(agreed_input):
         activity = agreed_input["activity"]
         duration_days = str(int(duration) * 7 - 1)
 
-        prompt = f"Please output a python list with a list of 9 travel destinations according to my budget of {budget} Euros in {time_of_year} starting from {starting_position}. The trip should be to a {climate} climate and should last {duration} weeks. I want to do a mix of {activity} activities. Find activities according to my budget. \n Do this for 9 possible destinations, first 3 where we stay in the continent, then 3 to another continent, the last 3 as close as possible to our starting position(can be in the same country).\n Strict condition: the output should be exactly like this: [\"Destination 1\", \"Destination 2\", ..., \"Destination 9\"] \n\n Each destinations in the list is in the format \"Place,  Country\" \n"
+        prompt = f"Please output a python list with a list of 9 travel destinations according to my budget of {budget} Euros in {time_of_year} starting from {starting_position}. The trip should be to a {climate} climate and should last {duration} weeks. I want to do a mix of {activity} activities. Find activities according to my budget. \n Do this for 9 possible destinations, first 3 where we stay in the continent(different countries), then 3 to another continent(different countries), the last 3 as close as possible to our starting position(may be in the same country as the starting position).\n Strict condition: the output should be exactly like this: [\"Destination 1\", \"Destination 2\", ..., \"Destination 9\"] \n\n Each destinations in the list is in the format \"Place,  Country\" \n"
 
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
@@ -65,6 +65,7 @@ def fetch_trips(agreed_input):
                         "transportation": "DRIVE/PLANE/TRANSIT/TRANSIT (string)",
                         "start_airport": "(closest airport to the start) (string IATA code)",
                         "end_airport": "(closest airport to the destination) (string IATA code)",
+                        "travel_time": "(travel time to destination) (integer(in hours))",
                         "description": f"Day 1: ... , Day 2: ... , Day 3: ..., Day 4: ..., ... (all remaining days, day by day) (string)",
                     }
                 ]
@@ -73,7 +74,7 @@ def fetch_trips(agreed_input):
 
         output_json_str = json.dumps(output_json, indent=4)
 
-        prompt = f"Please output only a JSON file describing a trip and activities according to my {budget} budget in {time_of_year} starting from {starting_position}. The trip should last {duration} weeks. I want to do a mix of {activity} activities. Find activities according to my budget. \n Do this for the following 3 destinations: {str_chosen_destinations}. \n Strict condition 1: I want activities for the complete {duration_days} days. \nStrict condition 2: Output it in exactly this JSON format:\n\n ”trips: [ {{\"name: \", \"position: \", \"transportation: \", \"start_airport: \", \"end_airport: \", \"Description of activities: \"}}  , ...]\n \n \"transportation\" should be only \"DRIVE\", \"PLANE\", \"TRANSIT\" \n Output Example JSON with the datatypes in brackets:\n{output_json_str} \n"
+        prompt = f"Please output only a JSON file describing a trip and activities according to my {budget} budget in {time_of_year} starting from {starting_position} with a low travel time. The trip should last {duration} weeks. I want to do a mix of {activity} activities. Find activities according to my budget. \n Do this for the following 3 destinations: {str_chosen_destinations}. \n Strict condition 1: I want activities for the complete {duration_days} days. \nStrict condition 2: Output it in exactly this JSON format:\n\n ”trips: [ {{\"name: \", \"position: \", \"transportation: \", \"start_airport: \", \"end_airport: \", \"travel_time: \",  \"Description of activities: \"}}  , ...]\n \n \"transportation\" should be only \"DRIVE\", \"PLANE\", \"TRANSIT\" \n Output Example JSON with the datatypes in brackets:\n{output_json_str} \n"
 
         # Call OpenAPI
 
@@ -108,4 +109,4 @@ def fetch_trips(agreed_input):
 
 
 # fetch_trips(agreed_input)
-# print(fetch_trips(agreed_input))
+print(fetch_trips(agreed_input))
