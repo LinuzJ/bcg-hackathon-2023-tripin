@@ -144,7 +144,7 @@ const HeaderTravelInput: React.FC = () => {
   };
 
   return (
-    <>
+    <Box p={2}>
       <Accordion
         expanded={travelInputOpen}
         onChange={(e) => setTravelInputOpen(!travelInputOpen)}
@@ -350,7 +350,7 @@ const HeaderTravelInput: React.FC = () => {
           <CircularProgress />
         </Box>
       )}
-    </>
+    </Box>
   );
 };
 
