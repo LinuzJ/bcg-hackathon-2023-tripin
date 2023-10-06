@@ -1,64 +1,10 @@
 "use client";
 
-import GoogleMaps, { PlaceType } from "@/components/GoogleMaps";
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Box,
-  Button,
-  CircularProgress,
-  FormControl,
-  Grid,
-  Slider,
-  Stack,
-  ToggleButton,
-  ToggleButtonGroup,
-  Typography,
-} from "@mui/material";
-import {
-  AppleLogo,
-  Bed,
-  Cactus,
-  CaretDown,
-  Church,
-  Mountains,
-  SneakerMove,
-  Snowflake,
-  TreeEvergreen,
-  TreePalm,
-} from "@phosphor-icons/react";
+import { PlaceType } from "@/components/GoogleMaps";
+import { Box } from "@mui/material";
 import { useState } from "react";
-import axios from "axios";
 import PlannerForm from "./PlannerForm";
 import PlannerMap from "./PlannerMap";
-
-const climates = [
-  { id: "tropical", name: "Tropical", icon: TreePalm },
-  { id: "desert", name: "Desert", icon: Cactus },
-  { id: "mountain", name: "Mountaineous", icon: Mountains },
-  { id: "alpine", name: "Alpine", icon: TreeEvergreen },
-  { id: "polar", name: "Polar", icon: Snowflake },
-  { id: "mediterranean", name: "Mediterranean", icon: AppleLogo },
-];
-
-const activityLevels = [
-  { id: "relaxing", name: "Relaxing", icon: Bed },
-  { id: "cultural", name: "Cultural", icon: Church },
-  { id: "sporty", name: "Sporty", icon: SneakerMove },
-];
-
-function valuetext(value: number) {
-  return `€${value}` + (value == 3000 ? "+" : "");
-}
-
-function valueDuration(value: number) {
-  if (value == 1) {
-    return `${value} week`;
-  }
-
-  return `${value} weeks`;
-}
 
 export interface FormStateProps {
   starting_position: PlaceType;
