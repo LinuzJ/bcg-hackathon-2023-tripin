@@ -5,7 +5,7 @@ import random
 
 openai.api_key = "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"
 
-agreed_input= {
+agreed_input = {
     "starting_position": "Madrid",
     "activity": "cultural",
     "climate": "mountaineous",
@@ -27,12 +27,12 @@ def fetch_trips(agreed_input):
     activity = agreed_input["activity"]
     duration_days = str(int(duration) * 7 - 1)
 
-    prompt =  f"Please output a python list with a list of 9 travel destinations according to my budget of {budget} Euros in {time_of_year} starting from {starting_position}. The trip should be to a {climate} climate and should last {duration} weeks. I want to do a mix of {activity} activities. Find activities according to my budget. \n Do this for 9 possible destinations, first 3 where we stay in the continent, then 3 to another continent, the last 3 as close as possible to our starting position(can be in the same country).\n Strict condition: the output should be exactly like this: [\"Destination 1\", \"Destination 2\", ..., \"Destination 9\"] \n\n Each destinations in the list is in the format \"Place,  Country\" \n"
+    prompt = f"Please output a python list with a list of 9 travel destinations according to my budget of {budget} Euros in {time_of_year} starting from {starting_position}. The trip should be to a {climate} climate and should last {duration} weeks. I want to do a mix of {activity} activities. Find activities according to my budget. \n Do this for 9 possible destinations, first 3 where we stay in the continent, then 3 to another continent, the last 3 as close as possible to our starting position(can be in the same country).\n Strict condition: the output should be exactly like this: [\"Destination 1\", \"Destination 2\", ..., \"Destination 9\"] \n\n Each destinations in the list is in the format \"Place,  Country\" \n"
 
     response = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo",
-                messages=[{"role": "user", "content": f"{prompt}"}
-                ])
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": f"{prompt}"}
+                  ])
 
     output = response['choices'][0]['message']['content']
 
@@ -50,7 +50,8 @@ def fetch_trips(agreed_input):
     random_last_destination = random.choice(last_three_destinations)
 
     # Store the randomly chosen destinations in a variable
-    chosen_destinations = [random_first_destination, random_next_destination, random_last_destination]
+    chosen_destinations = [random_first_destination,
+                           random_next_destination, random_last_destination]
     str_chosen_destinations = str(chosen_destinations)
 
     # Create prompt
@@ -58,13 +59,13 @@ def fetch_trips(agreed_input):
     output_json = [
         {
             "trips": [
-            {
-            "name": "(destination name) (string)",
-            "position": "[longitude, latitude] (float[] )",
-            "transportation": "CAR/PLANE/TRAIN/BUS (string)",
-            "description": f"Day 1: ... , Day 2: ... , Day 3: ..., Day 4: ..., ... (all remaining days, day by day) (string)",
-            }
-        ]
+                {
+                    "name": "(destination name) (string)",
+                    "position": "[longitude, latitude] (float[] )",
+                    "transportation": "CAR/PLANE/TRAIN/BUS (string)",
+                    "description": f"Day 1: ... , Day 2: ... , Day 3: ..., Day 4: ..., ... (all remaining days, day by day) (string)",
+                }
+            ]
         }
     ]
 
@@ -96,5 +97,5 @@ def fetch_trips(agreed_input):
     return output
 
 
-#fetch_trips(agreed_input)
+# fetch_trips(agreed_input)
 print(fetch_trips(agreed_input))
