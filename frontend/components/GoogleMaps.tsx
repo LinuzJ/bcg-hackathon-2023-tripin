@@ -41,8 +41,8 @@ export interface PlaceType {
 }
 
 const GoogleMaps: React.FC<{
-  value: PlaceType | null;
-  setValue: (value: PlaceType | null) => void;
+  value: PlaceType | undefined;
+  setValue: (value: PlaceType) => void;
 }> = ({ value, setValue }) => {
   const [inputValue, setInputValue] = React.useState("");
   const [options, setOptions] = React.useState<readonly PlaceType[]>([]);
@@ -130,7 +130,7 @@ const GoogleMaps: React.FC<{
       noOptionsText="No locations"
       onChange={(event: any, newValue: PlaceType | null) => {
         setOptions(newValue ? [newValue, ...options] : options);
-        setValue(newValue);
+        setValue(newValue as PlaceType);
       }}
       onInputChange={(event, newInputValue) => {
         setInputValue(newInputValue);

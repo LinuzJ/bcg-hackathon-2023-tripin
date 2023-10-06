@@ -66,17 +66,17 @@ function valueDuration(value: number) {
 // single_trip: bool,
 // duration: string,
 
-type FormStateProps = {
-  starting_position: string;
+interface FormStateProps {
+  starting_position: PlaceType;
   activity: string[];
   climate: string;
   budget: number;
   time_of_year: string;
   duration: string;
-};
+}
 
 const HeaderTravelInput: React.FC = () => {
-  const formState = useState<FormStateProps | undefined>();
+  const [formState, setFormState] = useState<FormStateProps | undefined>();
 
   const [period, setPeriod] = useState("summer");
   const [climate, setClimate] = useState("tropical");
@@ -86,26 +86,34 @@ const HeaderTravelInput: React.FC = () => {
   const [duration, setDuration] = useState(2);
   const [location, setLocation] = useState<PlaceType | null>(null);
 
-  // const onFormStateChange = (key: keyof FormStateProps, newValue: FormStateProps[keyof FormStateProps]) => {
-  //   const updatedFormState = { ...formState };
+  const onFormStateChange = (
+    key: keyof FormStateProps,
+    newValue: FormStateProps[keyof FormStateProps]
+  ) => {
+    const updatedFormState = { ...formState } as FormStateProps;
 
-  //   if (updatedFormState === undefined) {
-  //     return updatedFormState
-  //   }
+    if (updatedFormState === undefined) {
+      return updatedFormState;
+    }
 
-  //   if (key == "activity") {
-  //     const isAlreadySelected = updatedFormState[key].includes(newValue);
+    if (key == "activity") {
+      const isAlreadySelected = (updatedFormState[key] as string[]).includes(
+        newValue as string
+      );
 
-  //     setActivityLevel([
-  //       ...activityLevel.filter((a) => a != newValue),
-  //       ...(isAlreadySelected ? [] : [newValue]),
-  //     ]);
-  //   };
-  //   }
-  //   updatedFormState[key] = newValue;
+      setFormState({
+        ...updatedFormState,
+        activity: [
+          ...activityLevel.filter((a) => a != newValue),
+          ...(isAlreadySelected ? [] : [newValue as string]),
+        ],
+      });
+    }
 
-  //   return
-  // }
+    (updatedFormState as any)[key] = newValue;
+
+    return updatedFormState;
+  };
 
   const onActivityLevelChange = (
     e: React.MouseEvent<HTMLElement>,
@@ -170,7 +178,10 @@ const HeaderTravelInput: React.FC = () => {
                 {"Where are you trip'in from?"}
               </Typography>
               <FormControl>
-                <GoogleMaps value={location} setValue={setLocation} />
+                <GoogleMaps
+                  value={formState?.starting_position}
+                  setValue={(v) => onFormStateChange("starting_position", v)}
+                />
               </FormControl>
               {/* Period */}
               <Typography variant="h5">{"When are you going?"}</Typography>
