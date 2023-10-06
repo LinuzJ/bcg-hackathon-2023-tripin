@@ -32,7 +32,7 @@ export default function MyDocument({ emotionStyleTags }: MyDocumentProps) {
           rel="stylesheet"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;700;900&display=swap"
           rel="stylesheet"
         />
         {emotionStyleTags}

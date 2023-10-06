@@ -1,6 +1,12 @@
 import { alpha } from "@mui/material/styles";
 
-export type ColorSchema = "primary" | "secondary" | "info" | "success" | "warning" | "error";
+export type ColorSchema =
+  | "primary"
+  | "secondary"
+  | "info"
+  | "success"
+  | "warning"
+  | "error";
 
 declare module "@mui/material/styles/createPalette" {
   interface TypeBackground {
@@ -37,8 +43,8 @@ export const contrastText = {
 
 const PRIMARY = {
   lighter: "#DBF7EE",
-  light: "#8BD0C7",
-  main: "#2D6365",
+  light: "#e9edc9",
+  main: "#a7c957",
   dark: "#163E48",
   darker: "#082130",
   contrastText: contrastText.white,

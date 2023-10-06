@@ -1,6 +1,10 @@
 import { useMediaQuery } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
-import { createTheme, ThemeOptions, ThemeProvider as MUIThemeProvider } from "@mui/material/styles";
+import {
+  createTheme,
+  ThemeOptions,
+  ThemeProvider as MUIThemeProvider,
+} from "@mui/material/styles";
 import { ReactNode, useMemo } from "react";
 import componentsOverride from "./overrides";
 import palette from "./palette";
@@ -17,7 +21,7 @@ const ThemeWrapper: React.FC<Props> = ({ children }) => {
   const themeOptions: ThemeOptions = useMemo(
     () => ({
       palette: prefersDarkMode ? palette.dark : palette.light,
-      shape: { borderRadius: 2 },
+      shape: { borderRadius: 8 },
       shadows: prefersDarkMode ? shadows.dark : shadows.light,
       customShadows: prefersDarkMode ? customShadows.dark : customShadows.light,
       typography,
