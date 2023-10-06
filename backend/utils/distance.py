@@ -39,7 +39,7 @@ def get_maps_distance(start_lat, start_long, end_lat, end_long, travel_mode):
 
 def get_distance(start: tuple[float], end: tuple[float], travel_mode: str):
     start_lat, start_long = start[0], start[1]
-    end_lat, end_long = end[0], start[1]
+    end_lat, end_long = end[0], end[1]
 
     calc_func = haversine_distance if travel_mode == "PLANE" else get_maps_distance
 
