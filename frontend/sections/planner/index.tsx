@@ -62,7 +62,26 @@ function valueDuration(value: number) {
   return `${value} weeks`;
 }
 
+// starting_position: string,
+// activity: string,
+// climate: string,
+// budget: float,
+// time_of_year: string,
+// single_trip: bool,
+// duration: string,
+
+type FormStateProps = {
+  starting_position: string;
+  activity: string[];
+  climate: string;
+  budget: number;
+  time_of_year: string;
+  duration: string;
+};
+
 const HeaderTravelInput: React.FC = () => {
+  const formState = useState<FormStateProps | undefined>();
+
   const [period, setPeriod] = useState("summer");
   const [climate, setClimate] = useState("tropical");
   const [activityLevel, setActivityLevel] = useState(["lazy"]);
@@ -70,6 +89,27 @@ const HeaderTravelInput: React.FC = () => {
   const [budget, setBudget] = useState<number[]>([0, 500]);
   const [duration, setDuration] = useState(2);
   const [location, setLocation] = useState<PlaceType | null>(null);
+
+  // const onFormStateChange = (key: keyof FormStateProps, newValue: FormStateProps[keyof FormStateProps]) => {
+  //   const updatedFormState = { ...formState };
+
+  //   if (updatedFormState === undefined) {
+  //     return updatedFormState
+  //   }
+
+  //   if (key == "activity") {
+  //     const isAlreadySelected = updatedFormState[key].includes(newValue);
+
+  //     setActivityLevel([
+  //       ...activityLevel.filter((a) => a != newValue),
+  //       ...(isAlreadySelected ? [] : [newValue]),
+  //     ]);
+  //   };
+  //   }
+  //   updatedFormState[key] = newValue;
+
+  //   return
+  // }
 
   const onActivityLevelChange = (
     e: React.MouseEvent<HTMLElement>,
