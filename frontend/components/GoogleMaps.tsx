@@ -35,13 +35,15 @@ interface StructuredFormatting {
   secondary_text: string;
   main_text_matched_substrings?: readonly MainTextMatchedSubstrings[];
 }
-interface PlaceType {
+export interface PlaceType {
   description: string;
   structured_formatting: StructuredFormatting;
 }
 
-export default function GoogleMaps() {
-  const [value, setValue] = React.useState<PlaceType | null>(null);
+const GoogleMaps: React.FC<{
+  value: PlaceType | null;
+  setValue: (value: PlaceType | null) => void;
+}> = ({ value, setValue }) => {
   const [inputValue, setInputValue] = React.useState("");
   const [options, setOptions] = React.useState<readonly PlaceType[]>([]);
   const loaded = React.useRef(false);
@@ -177,4 +179,6 @@ export default function GoogleMaps() {
       }}
     />
   );
-}
+};
+
+export default GoogleMaps;

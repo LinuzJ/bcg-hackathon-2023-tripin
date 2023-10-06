@@ -5,9 +5,10 @@ const Logo: React.FC<{ color: string; sx?: SxProps }> = ({ color, sx }) => {
     <Box
       version="1.1"
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 100 100"
+      viewBox="0 0 80 80"
       component="svg"
       sx={{
+        transform: "translate(0, 8px)",
         "& .st0": {
           fill: color,
           strokeWidth: 3,

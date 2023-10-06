@@ -1,6 +1,6 @@
 "use client";
 
-import GoogleMaps from "@/components/GoogleMaps";
+import GoogleMaps, { PlaceType } from "@/components/GoogleMaps";
 import Logo from "@/components/Logo";
 import {
   Accordion,
@@ -63,10 +63,13 @@ function valueDuration(value: number) {
 }
 
 const HeaderTravelInput: React.FC = () => {
-  const [period, setPeriod] = useState();
+  const [period, setPeriod] = useState("summer");
   const [climate, setClimate] = useState("tropical");
   const [activityLevel, setActivityLevel] = useState(["lazy"]);
   const [travelInputOpen, setTravelInputOpen] = useState(true);
+  const [budget, setBudget] = useState<number[]>([0, 500]);
+  const [duration, setDuration] = useState<number>(2);
+  const [location, setLocation] = useState<PlaceType | null>(null);
 
   const onActivityLevelChange = (
     e: React.MouseEvent<HTMLElement>,
@@ -81,9 +84,6 @@ const HeaderTravelInput: React.FC = () => {
       ...(isAlreadySelected ? [] : [v]),
     ]);
   };
-
-  const [budget, setBudget] = useState<number[]>([20, 37]);
-  const [duration, setDuration] = useState<number>(2);
 
   const handleBudgetChange = (event: Event, newValue: number | number[]) => {
     setBudget(newValue as number[]);
@@ -110,7 +110,7 @@ const HeaderTravelInput: React.FC = () => {
                 {"Where are you trip'in from?"}
               </Typography>
               <FormControl>
-                <GoogleMaps />
+                <GoogleMaps value={location} setValue={setLocation} />
               </FormControl>
               {/* Period */}
               <Typography variant="h5">{"When are you going?"}</Typography>
@@ -176,7 +176,9 @@ const HeaderTravelInput: React.FC = () => {
                         onClick={() => setClimate(c.id)}
                         sx={{
                           width: 1,
-                          bgcolor: climate == c.id ? "primary.main" : "grey.50",
+                          boxShadow: (theme) => theme.customShadows.z16,
+                          bgcolor:
+                            climate == c.id ? "primary.main" : "common.white",
                           color:
                             climate == c.id ? "common.white" : "text.secondary",
                           display: "flex",
@@ -204,9 +206,10 @@ const HeaderTravelInput: React.FC = () => {
                         onClick={(e) => onActivityLevelChange(e, c.id)}
                         sx={{
                           width: 1,
+                          boxShadow: (theme) => theme.customShadows.z16,
                           bgcolor: activityLevel.includes(c.id)
                             ? "primary.main"
-                            : "grey.50",
+                            : "common.white",
                           color: activityLevel.includes(c.id)
                             ? "common.white"
                             : "text.secondary",
