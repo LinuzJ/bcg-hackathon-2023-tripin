@@ -1,6 +1,5 @@
 import math
 
-
 def haversine_distance(lat1, lon1, lat2, lon2) -> float:
     """Calculate the great-circle distance between two points on the Earth's surface."""
     R = 6371.0  # Earth radius in kilometers

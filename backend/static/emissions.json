@@ -2,6 +2,5 @@
  "CAR": 0.15,
  "CAR_EV": 0.07,
  "TRAIN": 0.07,
- "PLANE_LONG": 0.115,   
- "PLANE_SHORT": 0.2
+ "PLANE": 0.115
 }
