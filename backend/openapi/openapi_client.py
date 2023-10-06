@@ -4,7 +4,7 @@ import json
 import random
 import time
 
-openai.api_key = "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"
+openai.api_key = "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"
 
 agreed_input = {
     "starting_position": "Madrid",
@@ -64,7 +64,8 @@ def fetch_trips(agreed_input):
                         "name": "(destination name) (string)",
                         "position": "[longitude, latitude] (float[] )",
                         "transportation": "DRIVE/PLANE/TRANSIT/TRANSIT (string)",
-                        "airport": "(closest airport to the destination) (string)",
+                        "start_airport": "(closest airport to the start) (string IATA code)",
+                        "end_airport": "(closest airport to the destination) (string IATA code)",
                         "description": f"Day 1: ... , Day 2: ... , Day 3: ..., Day 4: ..., ... (all remaining days, day by day) (string)",
                     }
                 ]
@@ -73,7 +74,7 @@ def fetch_trips(agreed_input):
 
         output_json_str = json.dumps(output_json, indent=4)
 
-        prompt = f"Please output only a JSON file describing a trip and activities according to my {budget} budget in {time_of_year} starting from {starting_position}. The trip should last {duration} weeks. I want to do a mix of {activity} activities. Find activities according to my budget. \n Do this for the following 3 destinations: {str_chosen_destinations}. \n Strict condition 1: I want activities for the complete {duration_days} days. \nStrict condition 2: Output it in exactly this JSON format:\n\n ”trips: [ {{\"name: \", \"position: \", \"transportation: \", \"airport: \",  \"Description of activities: \"}}  , ...]\n \n \"transportation\" should be only \"DRIVE\", \"PLANE\", \"TRANSIT\" \n Output Example JSON with the datatypes in brackets:\n{output_json_str} \n"
+        prompt = f"Please output only a JSON file describing a trip and activities according to my {budget} budget in {time_of_year} starting from {starting_position}. The trip should last {duration} weeks. I want to do a mix of {activity} activities. Find activities according to my budget. \n Do this for the following 3 destinations: {str_chosen_destinations}. \n Strict condition 1: I want activities for the complete {duration_days} days. \nStrict condition 2: Output it in exactly this JSON format:\n\n ”trips: [ {{\"name: \", \"position: \", \"transportation: \", \"start_airport: \", \"end_airport: \", \"Description of activities: \"}}  , ...]\n \n \"transportation\" should be only \"DRIVE\", \"PLANE\", \"TRANSIT\" \n Output Example JSON with the datatypes in brackets:\n{output_json_str} \n"
 
         # Call OpenAPI
 
