@@ -68,7 +68,7 @@ const HeaderTravelInput: React.FC = () => {
   const [activityLevel, setActivityLevel] = useState(["lazy"]);
   const [travelInputOpen, setTravelInputOpen] = useState(true);
   const [budget, setBudget] = useState<number[]>([0, 500]);
-  const [duration, setDuration] = useState<number>(2);
+  const [duration, setDuration] = useState(2);
   const [location, setLocation] = useState<PlaceType | null>(null);
 
   const onActivityLevelChange = (
@@ -158,7 +158,7 @@ const HeaderTravelInput: React.FC = () => {
                     max={8}
                     min={1}
                     step={1}
-                    onChange={(e, v) => setDuration(v)}
+                    onChange={(e, v) => setDuration(v as number)}
                   />
                 </Stack>
               </div>

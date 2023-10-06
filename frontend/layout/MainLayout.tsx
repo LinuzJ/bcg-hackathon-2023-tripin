@@ -21,6 +21,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         }}
       >
         <Logo
+          // @ts-ignore
           color={theme.palette.primary.main}
           sx={{ height: 40, width: 40, mr: 1.5 }}
         />
