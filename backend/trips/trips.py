@@ -1,6 +1,6 @@
 import json
 from trips.helpers import haversine_distance
-from trips.openapi_client import fetch_trips
+from openapi.openapi_client import fetch_trips
 
 
 def _calculate_emission(start: tuple[float], end: tuple[float], type: str) -> float:
@@ -17,12 +17,11 @@ def _calculate_emission(start: tuple[float], end: tuple[float], type: str) -> fl
     distance_straight_line = haversine_distance(lat1, lon1, lat2, lon2)
 
     # Determine if long-haul or short-haul
-    if type == "plane" and distance_straight_line > 3000:
+    if type == "PLANE" and distance_straight_line > 3000:
         type = "plane_long"
-    elif type == "plane" and distance_straight_line <= 3000:
+    elif type == "PLANE" and distance_straight_line <= 3000:
         type = "plane_short"
 
-    print(type)
     try:
         with open("trips/static/emissions.json") as emission_file:
             emission_data = json.load(emission_file)
@@ -44,12 +43,11 @@ def generate_trips(input):
     trips = dict(trips)
     # Calculate emossions based on trips
     for trip in trips["trips"]:
-        for trans in trip["transportation"]:
-            start = input["starting_position"]
-            end = trip["position"]
-            trans_type = trans["type"]
-            emissions = _calculate_emission(start, end, trans_type)
-            trans["emission"] = emissions
+        start = input["starting_position"]
+        end = trip["position"]
+        trans_type = trip["transportation"]
+        emissions = _calculate_emission(start, end, trans_type)
+        trip["emission"] = emissions
 
     return trips
 

@@ -29,13 +29,9 @@ Something
             position: float[], # [long, lat]
             name: string,
             description: string
-            transportation: [
-                {
-                    emission: float,
-                    cost: float,
-                    type: string # car, plane, train
-                }
-            ]
+            transportation: string,
+            emission: float,
+            cost: float
         },
     ]
 }

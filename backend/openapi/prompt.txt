@@ -1,0 +1,18 @@
+Please output a JSON file describing a trip and activities according to my budget of 6000 Euro in December starting from Düsseldorf.
+The trip should be to a tropical climate in europe and should last 2 weeks. I want to do a mix of sporty activities. Find activities according to my budget.  Do this for five possible destinations
+Strict condition: Output it in exactly this JSON format:
+[{"position", "transportation", "name", "description"} , ...]
+
+"transportation" shoudl be only "CAR", "PLANE", "TRAIN", "BUS"
+Output Example JSON:
+{
+    trips: [
+        {
+            position: float[], # [long, lat]
+            name: string,
+            description: string,
+                transportation: string
+
+        }
+    ]
+}
