@@ -2,22 +2,23 @@ import openai
 import json
 
 import random
+import time
 
 openai.api_key = "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"
 
-agreed_input = {
-    "starting_position": "Madrid",
-    "activity": "cultural",
-    "climate": "mountaineous",
-    "budget": "3000",
-    "time_of_year": "june",
-    "single_trip": 1,
-    "duration": 3
-}
+# agreed_input = {
+#     "starting_position": "Madrid",
+#     "activity": "cultural",
+#     "climate": "mountaineous",
+#     "budget": "3000",
+#     "time_of_year": "june",
+#     "single_trip": 1,
+#     "duration": 3
+# }
 
 
 def fetch_trips(agreed_input):
-
+    start = time.time()
     # Get inputs
     budget = str(agreed_input["budget"])
     time_of_year = agreed_input["time_of_year"]
@@ -79,23 +80,24 @@ def fetch_trips(agreed_input):
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": f"{prompt}"}])
 
-    output = response['choices'][0]['message']['content']
+    output = json.loads(response['choices'][0]['message']['content'])
 
     # Get output in agreed JSON and return
 
-    """template_return = {
-        "trips": [
-            {
-                "position": [40.0, 60.0],
-                "name": "template",
-                "description": "template",
-                "transportation": "PLANE"
-            },
-        ]
-    }"""
-
+    # """template_return = {
+    #         "trips": [
+    #             {
+    #                 "position": [40.0, 60.0],
+    #                 "name": "template",
+    #                 "description": "template",
+    #                 "transportation": "PLANE"
+    #             },
+    #         ]
+    #     }"""
+    end = time.time()
+    print("OPENAPI EXECUTION TIME:", end - start)
     return output
 
 
 # fetch_trips(agreed_input)
-print(fetch_trips(agreed_input))
+# print(fetch_trips(agreed_input))
