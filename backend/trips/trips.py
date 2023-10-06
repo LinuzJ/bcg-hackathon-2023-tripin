@@ -5,10 +5,11 @@ from openapi.openapi_client import fetch_trips
 
 
 def generate_trips(input):
-    trips = fetch_trips(input)
+    generated_trips = fetch_trips(input)
 
+    print("NAME", generated_trips["trips"])
     # Calculate emissions based on trips
-    for trip in trips["trips"]:
+    for trip in generated_trips["trips"]:
         start = input["starting_position"]
         end = trip["position"]
         trans_type = trip["transportation"]
@@ -17,4 +18,4 @@ def generate_trips(input):
         cost = calculate_cost(start, end, trans_type)
         trip["cost"] = cost
 
-    return trips
+    return generated_trips
