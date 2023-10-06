@@ -10,11 +10,12 @@ Body:
 {
     starting_position: float[], # List of length 2 with long and lat as float
     activity: float,
-    climate: float,
+    climate: string,
     budget: float,
-    distance: float,
     time_of_year: string,
     single_trip: bool,
+    duration: string,
+    <!-- distance: float, --> Add later?
 }
 ```
 
