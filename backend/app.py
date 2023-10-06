@@ -8,9 +8,6 @@ def generate_trip():
     # You can access the request data using request.json or request.form
     data = request.json  # Assuming the data is in JSON format
 
-    # Process the data and generate the trip here
-    # Replace this with your actual trip generation logic
-
     # Example response
     response = {
         'message': 'Trip generated successfully!',
