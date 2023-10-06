@@ -10,9 +10,17 @@ def fetch_trips(agreed_input):
     template_return = {
         "trips": [
             {
-                "position": [0.0, 0.0],
+                "position": [40.0, 60.0],
                 "name": "template",
-                "description": "template"
+                "description": "template",
+                "transportation": [
+                    {
+                        "type": "car"
+                    },
+                    {
+                        "type": "plane"
+                    }
+                ]
             },
         ]
     }

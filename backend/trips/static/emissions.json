@@ -1,0 +1,7 @@
+{
+ "car": 0.15,
+ "car_ev": 0.07,
+ "train": 0.07,
+ "plane_long": 0.115,   
+ "plane_short": 0.2
+}
