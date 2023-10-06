@@ -1,29 +1,20 @@
 from flask import Flask, request, jsonify
+from trips.trips import generate_trips
 
 app = Flask(__name__)
 
 
-@app.route('/generate-trip', methods=['POST'])
-def generate_trip():
+@app.route('/generate-trips', methods=['POST'])
+def test():
     # You can access the request data using request.json or request.form
     data = request.json  # Assuming the data is in JSON format
 
     # Generate trips
-    trips = generate_trip(data)
-
-    # Calculate emossions based on trips
-    # emissions = calculate_emission(trips)
-
-    # Calculate cost based on trips
-    # cost = calculate_cost(trips)
-
-    # Aggregate data into return
-    # return_data = {
-    # }
+    trips = generate_trips(data)
 
     response = {
         'message': 'Trip generated successfully!',
-        'data': data
+        'data': trips
     }
 
     return jsonify(response), 200
