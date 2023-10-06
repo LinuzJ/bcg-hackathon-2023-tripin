@@ -1,6 +1,8 @@
 Agreed endpoint input
 
+```
 /generate-trip
+```
 
 Body:
 
@@ -25,10 +27,27 @@ Something
         {
             location: {
                 position: float[], # [long, lat]
-                name: string
+                name: string,
+                description: string
             },
             emission: float,
             cost: float
+        }
+    ]
+}
+```
+
+## JSON <-> trips-client
+
+From trips-client we need:
+
+```
+{
+    trips: [
+        {
+            position: float[], # [long, lat]
+            name: string,
+            description: string
         }
     ]
 }
