@@ -1,7 +1,6 @@
 "use client";
 
 import GoogleMaps, { PlaceType } from "@/components/GoogleMaps";
-import Logo from "@/components/Logo";
 import {
   Accordion,
   AccordionDetails,
@@ -11,14 +10,11 @@ import {
   CircularProgress,
   FormControl,
   Grid,
-  OutlinedInput,
-  Paper,
   Slider,
   Stack,
   ToggleButton,
   ToggleButtonGroup,
   Typography,
-  useTheme,
 } from "@mui/material";
 import {
   AppleLogo,
@@ -26,7 +22,6 @@ import {
   Cactus,
   CaretDown,
   Church,
-  CoinVertical,
   Mountains,
   SneakerMove,
   Snowflake,
@@ -34,6 +29,7 @@ import {
   TreePalm,
 } from "@phosphor-icons/react";
 import { useState } from "react";
+import axios from "axios";
 
 const climates = [
   { id: "tropical", name: "Tropical", icon: TreePalm },
@@ -129,8 +125,31 @@ const HeaderTravelInput: React.FC = () => {
     setBudget(newValue as number[]);
   };
 
-  const handleSubmission = () => {
+  const handleSubmission = async () => {
     setTravelInputOpen(false);
+
+    const data = {
+      starting_position: location,
+      activity: activityLevel,
+      climate: climate,
+      budget: budget,
+      time_of_year: period,
+      duration: duration,
+    };
+
+    const API_URL = "localhost:5000/generate-trips";
+    const headers = {
+      "Content-Type": "application/json",
+    };
+
+    const response = await axios
+      .post(API_URL, data, { headers })
+      .catch((error) => {
+        console.log("Error in get multiple suggestions:" + error);
+        return null;
+      });
+
+    console.log(response);
   };
 
   return (
