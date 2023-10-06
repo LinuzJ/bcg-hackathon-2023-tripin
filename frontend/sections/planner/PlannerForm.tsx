@@ -27,6 +27,8 @@ import {
   Snowflake,
   Bed,
   CaretDown,
+  Robot,
+  Brain,
 } from "@phosphor-icons/react";
 import axios from "axios";
 
@@ -87,7 +89,7 @@ const PlannerForm: React.FC<PlannerForm> = ({
       duration: formState.duration + "",
     };
 
-    const API_URL = "http://127.0.0.1:8000/generate-trips";
+    const API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
     const headers = {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
@@ -299,7 +301,7 @@ const PlannerForm: React.FC<PlannerForm> = ({
                 size="large"
                 variant="contained"
               >
-                Find my Trip
+                Start Trip'in
               </Button>
             </Stack>
           </Box>

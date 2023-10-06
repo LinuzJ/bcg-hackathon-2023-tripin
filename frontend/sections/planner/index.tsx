@@ -69,15 +69,14 @@ const HeaderTravelInput: React.FC = () => {
 
   return (
     <>
-      {formStep == 0 && (
-        <Box p={2}>
-          <PlannerForm
-            formState={formState}
-            onFormStateChange={onFormStateChange}
-            onSuccess={onFormSuccess}
-          />
-        </Box>
-      )}
+      <Box px={2}>
+        <PlannerForm
+          formState={formState}
+          onFormStateChange={onFormStateChange}
+          onSuccess={onFormSuccess}
+        />
+      </Box>
+
       {formStep == 1 && <PlannerMap />}
     </>
   );

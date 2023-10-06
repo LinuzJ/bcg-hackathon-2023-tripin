@@ -15,10 +15,12 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       <Box
         id="top"
         sx={{
-          p: 2,
+          p: 1,
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          borderBottom: "1px solid",
+          borderColor: "divider",
         }}
       >
         <Logo
