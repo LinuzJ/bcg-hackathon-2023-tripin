@@ -9,7 +9,7 @@ def generate_trip():
     data = request.json  # Assuming the data is in JSON format
 
     # Generate trips
-    # trips = trips_(data)
+    trips = generate_trip(data)
 
     # Calculate emossions based on trips
     # emissions = calculate_emission(trips)
