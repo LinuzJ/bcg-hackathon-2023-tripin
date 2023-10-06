@@ -27,6 +27,7 @@ import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import { LayoutGroup, motion } from "framer-motion";
 import photoGenerator from "@/api/photo";
+import imageGenerator from "@/api/photo";
 
 const dummyData = [
   {
@@ -86,6 +87,19 @@ const PlannerMap: React.FC = () => {
   const [center, setCenter] = useState<LngLatLike>([6.953101, 50.935173]);
   const [activeLocation, setActiveLocation] = useState<number>(0);
   const [isViewingItinerary, setIsViewingItinerary] = useState(false);
+  const [photos, setPhotos] = useState<string[]>([]);
+
+  useEffect(() => {
+    const getPhotos = async () => {
+      const photoArray = await Promise.all(
+        dummyData.map(async (data) => {
+          return await imageGenerator(data.title);
+        })
+      );
+      setPhotos(photoArray.map((photo) => photo ?? ""));
+    };
+    getPhotos();
+  });
 
   const handleActiveLocationChange = (data: any) => {
     setActiveLocation(data.id);
@@ -132,7 +146,7 @@ const PlannerMap: React.FC = () => {
           {dummyData
             .sort((data) => (data.id == activeLocation ? -1 : 1))
             .slice(0, isViewingItinerary ? 1 : 3)
-            .map((data) => (
+            .map((data, i) => (
               <motion.div layout key={data.id}>
                 <Card
                   sx={{
@@ -193,7 +207,7 @@ const PlannerMap: React.FC = () => {
                           height: isViewingItinerary ? 200 : 1,
                           objectFit: "cover",
                         }}
-                        src={data.image}
+                        src={photos[i]}
                       />
                     </CardMedia>
                     <Box>
