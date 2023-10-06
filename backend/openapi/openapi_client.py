@@ -3,15 +3,15 @@ import json
 
 openai.api_key = "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"
 
-agreed_input = {
-    "starting_position": "Dusseldorf",
-    "activity": "sporty",
-    "climate": "average",
-    "budget": 5000,
-    "time_of_year": "september",
-    "single_trip": 1,
-    "duration": 2
-}
+# agreed_input = {
+#     "starting_position": "Dusseldorf",
+#     "activity": "sporty",
+#     "climate": "average",
+#     "budget": 5000,
+#     "time_of_year": "september",
+#     "single_trip": 1,
+#     "duration": 2
+# }
 
 
 def fetch_trips(agreed_input):
@@ -64,4 +64,4 @@ def fetch_trips(agreed_input):
     return output
 
 
-print(fetch_trips(agreed_input))
+# print(fetch_trips(agreed_input))
