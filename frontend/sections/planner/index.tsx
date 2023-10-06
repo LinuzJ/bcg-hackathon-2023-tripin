@@ -1,7 +1,6 @@
 "use client";
 
 import GoogleMaps, { PlaceType } from "@/components/GoogleMaps";
-import Logo from "@/components/Logo";
 import {
   Accordion,
   AccordionDetails,
@@ -11,14 +10,11 @@ import {
   CircularProgress,
   FormControl,
   Grid,
-  OutlinedInput,
-  Paper,
   Slider,
   Stack,
   ToggleButton,
   ToggleButtonGroup,
   Typography,
-  useTheme,
 } from "@mui/material";
 import {
   AppleLogo,
@@ -26,7 +22,6 @@ import {
   Cactus,
   CaretDown,
   Church,
-  CoinVertical,
   Mountains,
   SneakerMove,
   Snowflake,
@@ -34,6 +29,7 @@ import {
   TreePalm,
 } from "@phosphor-icons/react";
 import { useState } from "react";
+import axios from "axios";
 
 const climates = [
   { id: "tropical", name: "Tropical", icon: TreePalm },
@@ -62,14 +58,54 @@ function valueDuration(value: number) {
   return `${value} weeks`;
 }
 
+// starting_position: string,
+// activity: string,
+// climate: string,
+// budget: float,
+// time_of_year: string,
+// single_trip: bool,
+// duration: string,
+
+type FormStateProps = {
+  starting_position: string;
+  activity: string[];
+  climate: string;
+  budget: number;
+  time_of_year: string;
+  duration: string;
+};
+
 const HeaderTravelInput: React.FC = () => {
+  const formState = useState<FormStateProps | undefined>();
+
   const [period, setPeriod] = useState("summer");
   const [climate, setClimate] = useState("tropical");
   const [activityLevel, setActivityLevel] = useState(["lazy"]);
   const [travelInputOpen, setTravelInputOpen] = useState(true);
   const [budget, setBudget] = useState<number[]>([0, 500]);
-  const [duration, setDuration] = useState<number>(2);
+  const [duration, setDuration] = useState(2);
   const [location, setLocation] = useState<PlaceType | null>(null);
+
+  // const onFormStateChange = (key: keyof FormStateProps, newValue: FormStateProps[keyof FormStateProps]) => {
+  //   const updatedFormState = { ...formState };
+
+  //   if (updatedFormState === undefined) {
+  //     return updatedFormState
+  //   }
+
+  //   if (key == "activity") {
+  //     const isAlreadySelected = updatedFormState[key].includes(newValue);
+
+  //     setActivityLevel([
+  //       ...activityLevel.filter((a) => a != newValue),
+  //       ...(isAlreadySelected ? [] : [newValue]),
+  //     ]);
+  //   };
+  //   }
+  //   updatedFormState[key] = newValue;
+
+  //   return
+  // }
 
   const onActivityLevelChange = (
     e: React.MouseEvent<HTMLElement>,
@@ -89,8 +125,32 @@ const HeaderTravelInput: React.FC = () => {
     setBudget(newValue as number[]);
   };
 
-  const handleSubmission = () => {
+  const handleSubmission = async () => {
     setTravelInputOpen(false);
+
+    const data = {
+      starting_position: location,
+      activity: activityLevel,
+      climate: climate,
+      budget: budget,
+      time_of_year: period,
+      duration: duration,
+    };
+
+    const API_URL = "http://127.0.0.1:8000/generate-trips";
+    const headers = {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+    };
+
+    const response = await axios
+      .post(API_URL, data, { headers })
+      .catch((error) => {
+        console.log("Error in get multiple suggestions:" + error);
+        return null;
+      });
+
+    console.log(response);
   };
 
   return (
@@ -158,7 +218,7 @@ const HeaderTravelInput: React.FC = () => {
                     max={8}
                     min={1}
                     step={1}
-                    onChange={(e, v) => setDuration(v)}
+                    onChange={(e, v) => setDuration(v as number)}
                   />
                 </Stack>
               </div>
@@ -195,7 +255,7 @@ const HeaderTravelInput: React.FC = () => {
               </div>
               {/* Activity */}
               <Typography variant="h5">
-                {"What is your preferred level of activity?"}
+                {"What is your preferred activity?"}
               </Typography>
               <div>
                 <Grid container spacing={1} sx={{ width: 1 }}>

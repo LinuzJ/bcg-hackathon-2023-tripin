@@ -1,6 +1,6 @@
 import Illustration from "@/components/Illustration";
 import MainLayout from "@/layout/MainLayout";
-import HeaderTravelInput from "@/sections/header/HeaderTravelInput";
+import HeaderTravelInput from "@/sections/planner";
 import Hero from "@/sections/hero";
 import Map from "@/sections/map/Map";
 import { useTheme } from "@emotion/react";
@@ -22,9 +22,7 @@ export default function Home() {
       <MainLayout>
         <HeaderTravelInput />
       </MainLayout>
-      {/* <main>
-        <Map />
-      </main> */}
+      <main>{/* <Map /> */}</main>
     </>
   );
 }

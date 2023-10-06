@@ -59,7 +59,7 @@ def fetch_trips(agreed_input):
         {
             "trips": [
             {
-            "destination": "... (string)",
+            "name": "(destination name) (string)",
             "position": "[longitude, latitude] (float[] )",
             "transportation": "CAR/PLANE/TRAIN/BUS (string)",
             "description": f"Day 1: ... , Day 2: ... , Day 3: ..., Day 4: ..., ... (all remaining days, day by day) (string)",
@@ -70,14 +70,13 @@ def fetch_trips(agreed_input):
 
     output_json_str = json.dumps(output_json, indent=4)
 
-    prompt = f"Please output only a JSON file describing a trip and activities according to my {budget} budget in {time_of_year} starting from {starting_position}. The trip should last {duration} weeks. I want to do a mix of {activity} activities. Find activities according to my budget. \n Do this for the following 3 destinations: {str_chosen_destinations} . \n I want activities for the complete {duration_days} days. \nStrict condition: Output it in exactly this JSON format:\n\n ”trips: [ {{\"destination: \", \"position: \", \"transportation: \", \"Description of activities: \"}}  , ...]\n \n \"transportation\" should be only \"CAR\", \"PLANE\", \"TRAIN\", \"BUS\" \n Output Example JSON with the datatypes in brackets:\n{output_json_str} \n"
+    prompt = f"Please output only a JSON file describing a trip and activities according to my {budget} budget in {time_of_year} starting from {starting_position}. The trip should last {duration} weeks. I want to do a mix of {activity} activities. Find activities according to my budget. \n Do this for the following 3 destinations: {str_chosen_destinations} . \n I want activities for the complete {duration_days} days. \nStrict condition: Output it in exactly this JSON format:\n\n ”trips: [ {{\"name: \", \"position: \", \"transportation: \", \"Description of activities: \"}}  , ...]\n \n \"transportation\" should be only \"CAR\", \"PLANE\", \"TRAIN\", \"BUS\" \n Output Example JSON with the datatypes in brackets:\n{output_json_str} \n"
 
     # Call OpenAPI
 
     response = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo",
-                messages=[{"role": "user", "content": f"{prompt}"}
-                ])
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": f"{prompt}"}])
 
     output = response['choices'][0]['message']['content']
 
