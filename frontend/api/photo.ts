@@ -59,7 +59,7 @@ async function photoGenerator(location: string): Promise<void> {
       );
     }
   } catch (error) {
-    console.error(`Error: ${error.message}`);
+    // console.error(`Error: ${error.message}`);
   }
 }
 
