@@ -6,15 +6,15 @@ import time
 
 openai.api_key = "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"
 
-agreed_input = {
-    "starting_position": "Madrid",
-    "activity": "cultural",
-    "climate": "mountaineous",
-    "budget": "3000",
-    "time_of_year": "june",
-    "single_trip": 1,
-    "duration": 3
-}
+# agreed_input = {
+#     "starting_position": "Madrid",
+#     "activity": "cultural",
+#     "climate": "mountaineous",
+#     "budget": "3000",
+#     "time_of_year": "june",
+#     "single_trip": 1,
+#     "duration": 3
+# }
 
 
 def fetch_trips(agreed_input):
@@ -51,7 +51,8 @@ def fetch_trips(agreed_input):
         random_last_destination = random.choice(last_three_destinations)
 
         # Store the randomly chosen destinations in a variable
-        chosen_destinations = [random_first_destination, random_next_destination, random_last_destination]
+        chosen_destinations = [random_first_destination,
+                               random_next_destination, random_last_destination]
         str_chosen_destinations = str(chosen_destinations)
 
         # Create prompt
@@ -109,4 +110,4 @@ def fetch_trips(agreed_input):
 
 
 # fetch_trips(agreed_input)
-print(fetch_trips(agreed_input))
+# print(fetch_trips(agreed_input))

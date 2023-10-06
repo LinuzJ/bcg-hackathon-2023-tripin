@@ -10,7 +10,7 @@ def calculate_cost(start: tuple[float], end: tuple[float], travel_mode: str, sta
     if travel_mode == "PLANE":
         return _plane_cost(start_airport, end_airport)
     if travel_mode == "TRANSIT":
-        return _train_cost(distance, start, end)
+        return _train_cost(distance)
 
 
 def _car_cost(distance: float) -> float:
@@ -18,7 +18,7 @@ def _car_cost(distance: float) -> float:
     return distance*1.5
 
 
-def _train_cost(distance: float, start: tuple[float], end: tuple[float]) -> float:
+def _train_cost(distance: float) -> float:
     # Utilize some external API to calculate train prices from location to destination
     return distance*0.5
 
@@ -28,13 +28,10 @@ def _plane_cost(start_airport, end_airport) -> float:
     # start_airport = _get_closest_airport(start[0], start[1])
     # end_airport = _get_closest_airport(end[0], end[1])
     # return _get_flight_prices(start_airport, end_airport, datetime.now().strftime('%Y-%m-%d'))
-    print("AIRPORT")
-    print(start_airport, end_airport)
-    price = _get_flight_prices(
-        start_airport, end_airport, datetime.now().strftime('%Y-%m-%d'))
-    
-    return price
-
+    try:
+        return _get_flight_prices(start_airport, end_airport, datetime.now().strftime('%Y-%m-%d'))
+    except Exception as e:
+        return None
 
 def _get_flight_prices(origin, destination, date):
     base_url = "https://partners.api.skyscanner.net/apiservices/v3/flights/indicative/search"
