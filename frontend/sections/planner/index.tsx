@@ -118,29 +118,30 @@ const HeaderTravelInput: React.FC = () => {
   const handleSubmission = async () => {
     setTravelInputOpen(false);
 
-    // const data = {
-    //   starting_position: location,
-    //   activity: activityLevel,
-    //   climate: climate,
-    //   budget: budget,
-    //   time_of_year: period,
-    //   duration: duration,
-    // };
+    const data = {
+      starting_position:
+        formState.starting_position.structured_formatting.main_text,
+      activity: formState.activity,
+      climate: formState.climate,
+      budget: formState.budget,
+      time_of_year: formState.time_of_year,
+      duration: formState.duration,
+    };
 
-    // const API_URL = "http://127.0.0.1:8000/generate-trips";
-    // const headers = {
-    //   "Content-Type": "application/json",
-    //   "Access-Control-Allow-Origin": "*",
-    // };
+    const API_URL = "http://127.0.0.1:8000/generate-trips";
+    const headers = {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+    };
 
-    // const response = await axios
-    //   .post(API_URL, data, { headers })
-    //   .catch((error) => {
-    //     console.log("Error in get multiple suggestions:" + error);
-    //     return null;
-    //   });
+    const response = await axios
+      .post(API_URL, data, { headers })
+      .catch((error) => {
+        console.log("Error in get multiple suggestions:" + error);
+        return null;
+      });
 
-    // console.log(response);
+    console.log(response);
   };
 
   return (

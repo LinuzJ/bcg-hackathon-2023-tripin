@@ -1,6 +1,8 @@
+import json
 from costs.calculate import calculate_cost
 from emissions.calculate import calculate_emissions
 from openapi.openapi_client import fetch_trips
+
 
 def generate_trips(input):
     trips = fetch_trips(input)
