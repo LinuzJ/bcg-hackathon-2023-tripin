@@ -8,7 +8,7 @@ Body:
 
 ```
 {
-    starting_position: float[], # List of length 2 with long and lat as float
+    starting_position: string,
     activity: string,
     climate: string,
     budget: float,

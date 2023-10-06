@@ -18,9 +18,9 @@ def _calculate_emission(start: tuple[float], end: tuple[float], type: str) -> fl
 
     # Determine if long-haul or short-haul
     if type == "PLANE" and distance_straight_line > 3000:
-        type = "plane_long"
+        type = "PLANE_LONG"
     elif type == "PLANE" and distance_straight_line <= 3000:
-        type = "plane_short"
+        type = "PLANE_SHORT"
 
     try:
         with open("trips/static/emissions.json") as emission_file:
@@ -40,7 +40,6 @@ def _calculate_emission(start: tuple[float], end: tuple[float], type: str) -> fl
 def generate_trips(input):
     trips = fetch_trips(input)
 
-    trips = dict(trips)
     # Calculate emossions based on trips
     for trip in trips["trips"]:
         start = input["starting_position"]

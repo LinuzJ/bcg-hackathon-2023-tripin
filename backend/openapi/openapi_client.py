@@ -58,7 +58,7 @@ def fetch_trips(agreed_input):
                 "position": [40.0, 60.0],
                 "name": "template",
                 "description": "template",
-                "transportation": "plane"
+                "transportation": "PLANE"
             },
         ]
     }"""
