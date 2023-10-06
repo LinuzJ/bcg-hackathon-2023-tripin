@@ -25,14 +25,17 @@ Something
 {
     trips: [
         {
-            location: {
-                position: float[], # [long, lat]
-                name: string,
-                description: string
-            },
-            emission: float,
-            cost: float
-        }
+            position: float[], # [long, lat]
+            name: string,
+            description: string
+            transportation: [
+                {
+                    emission: float,
+                    cost: float,
+                    type: string # car, plane, train
+                }
+            ]
+        },
     ]
 }
 ```
