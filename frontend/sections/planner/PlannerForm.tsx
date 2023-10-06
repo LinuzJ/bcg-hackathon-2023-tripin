@@ -90,6 +90,7 @@ const PlannerForm: React.FC<PlannerForm> = ({
     };
 
     const API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
+
     const headers = {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
@@ -97,8 +98,12 @@ const PlannerForm: React.FC<PlannerForm> = ({
 
     setIsLoading(true);
 
+    if (API_URL === undefined) {
+      console.error("Cannot find API URL");
+    }
+
     const response = await axios
-      .post(API_URL, data, { headers })
+      .post(API_URL as string, data, { headers })
       .then((response) => {
         setIsLoading(false);
         console.log(response);
@@ -301,7 +306,7 @@ const PlannerForm: React.FC<PlannerForm> = ({
                 size="large"
                 variant="contained"
               >
-                Start Trip'in
+                {"Start Trip'in"}
               </Button>
             </Stack>
           </Box>
