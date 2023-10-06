@@ -26,12 +26,12 @@ const HeaderTravelInput: React.FC = () => {
     },
     activity: ["relaxing"],
     climate: "tropical",
-    budget: [0, 300],
+    budget: [0, 1200],
     time_of_year: "winter",
     duration: 2,
   });
 
-  const [formStep, setFormStep] = useState(0);
+  const [formStep, setFormStep] = useState(1);
 
   const onFormStateChange = (
     key: keyof FormStateProps,
@@ -69,28 +69,15 @@ const HeaderTravelInput: React.FC = () => {
 
   return (
     <>
-      <Box p={2}>
-        {formStep == 0 && (
+      {formStep == 0 && (
+        <Box p={2}>
           <PlannerForm
             formState={formState}
             onFormStateChange={onFormStateChange}
             onSuccess={onFormSuccess}
           />
-        )}
-        {/* {!travelInputOpen && (
-        <Box
-          sx={{
-            width: 1,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "50%",
-          }}
-          >
-          <CircularProgress />
-          </Box>
-        )} */}
-      </Box>
+        </Box>
+      )}
       {formStep == 1 && <PlannerMap />}
     </>
   );

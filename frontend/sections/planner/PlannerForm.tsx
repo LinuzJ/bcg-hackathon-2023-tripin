@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { use, useState } from "react";
 import { FormStateProps } from ".";
 import GoogleMaps from "@/components/GoogleMaps";
 import {
@@ -14,6 +14,7 @@ import {
   Grid,
   Slider,
   Button,
+  CircularProgress,
 } from "@mui/material";
 import {
   TreePalm,
@@ -71,6 +72,7 @@ const PlannerForm: React.FC<PlannerForm> = ({
   onSuccess,
 }) => {
   const [travelInputOpen, setTravelInputOpen] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmission = async () => {
     setTravelInputOpen(false);
@@ -91,9 +93,17 @@ const PlannerForm: React.FC<PlannerForm> = ({
       "Access-Control-Allow-Origin": "*",
     };
 
+    setIsLoading(true);
+
     const response = await axios
       .post(API_URL, data, { headers })
+      .then((response) => {
+        setIsLoading(false);
+        console.log(response);
+        return response;
+      })
       .catch((error) => {
+        setIsLoading(false);
         console.log("Error in get multiple suggestions:" + error);
         return null;
       });
@@ -104,7 +114,7 @@ const PlannerForm: React.FC<PlannerForm> = ({
   return (
     <>
       <Accordion
-        expanded={travelInputOpen}
+        expanded={travelInputOpen && !isLoading}
         onChange={(e) => setTravelInputOpen(!travelInputOpen)}
       >
         <AccordionSummary expandIcon={<CaretDown size={20} />}>
@@ -295,6 +305,22 @@ const PlannerForm: React.FC<PlannerForm> = ({
           </Box>
         </AccordionDetails>
       </Accordion>
+      {isLoading && (
+        <Box
+          sx={{
+            width: 1,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "column",
+            height: "50%",
+          }}
+        >
+          <CircularProgress />
+
+          <Typography variant="h3">{"Generating your trip..."}</Typography>
+        </Box>
+      )}
     </>
   );
 };

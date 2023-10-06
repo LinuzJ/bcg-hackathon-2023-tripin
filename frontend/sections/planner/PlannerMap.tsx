@@ -26,38 +26,38 @@ import React, { useEffect, useRef, useState } from "react";
 const dummyData = [
   {
     id: 0,
-    title: "Mongolia",
-    description: "Hei",
+    title: "Cologne",
+    coordinates: [50.935173, 6.953101],
+    description:
+      "Take a train (around 45 minutes) to Cologne. You can find affordable train tickets for about 20-30 euros round trip. Visit the iconic Cologne Cathedral (Kölner Dom), which is free to enter but consider a small donation. Stroll along the Rhine River and enjoy the scenic views.",
     image:
-      "https://a.cdn-hotels.com/gdcs/production61/d1121/6dfd3cfe-d31b-4514-b3af-aee8536223d1.jpg?impolicy=fcrop&w=800&h=533&q=medium",
+      "https://i.guim.co.uk/img/media/82f98ba14fde31d4605f541794e5456e11201644/379_271_5327_3196/master/5327.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=5a75229ff2184a9e8f1b68f2ce20dbf0",
+    carbonLevel: 0,
   },
   {
     id: 1,
-    title: "Düsseldorf",
-    description: "Hei",
+    title: "Day Trip to Duisburg",
+    coordinates: [51.435146, 6.762692],
+    description:
+      "Take a short train ride (around 20 minutes) to Duisburg, which is known for its industrial heritage. Visit Landschaftspark Duisburg-Nord, a former industrial site turned into a public park and cultural center. Entrance is free, but you may want to budget for a guided tour if interested.",
     image:
-      "https://a.cdn-hotels.com/gdcs/production61/d1121/6dfd3cfe-d31b-4514-b3af-aee8536223d1.jpg?impolicy=fcrop&w=800&h=533&q=medium",
+      "https://duisburg-travel-stories.de/wp-content/uploads/2022/07/fotospot_header-1200x675.jpg",
+    carbonLevel: 0,
+  },
+  {
+    id: 2,
+    title: "Barcelona",
+    coordinates: [41.390205, 2.154007],
+    description:
+      "Arrive in Barcelona and check into your accommodation. Look for budget-friendly hostels or guesthouses in areas like El Raval or Poble Sec. Start your day with a visit to the famous La Boqueria Market, where you can sample local food and buy fresh produce for a picnic later.",
+    image:
+      "https://a.cdn-hotels.com/gdcs/production81/d1983/1441d9b5-d0e6-4230-9923-646d58ba66d8.jpg",
+    carbonLevel: 1,
   },
 ];
 
-const API_KEY =
-  "pk.eyJ1IjoibWF0cmFhIiwiYSI6ImNreGMweHUwNjB0OGsycG83d3B3N2d4N2kifQ.sn_yCa6tkatkbAs_QSQxLQ";
-
 const PlannerMap: React.FC = () => {
-  const mapRef = useRef();
-
-  // useEffect(() => {
-  //   const map = new mapboxgl.Map({
-  //     container: mapContainerRef.current,
-  //     style: "mapbox://styles/lmaps/ckl6t1boq578819qod5v7ynby",
-  //     center: markerLngLat,
-  //     zoom: 13,
-  //   });
-
-  //   setMap(map);
-  // }, []);
-
-  const [center, setCenter] = useState<LngLatLike>([100, 50]);
+  const [center, setCenter] = useState<LngLatLike>([6.953101, 50.935173]);
 
   return (
     <>
@@ -79,7 +79,9 @@ const PlannerMap: React.FC = () => {
           {dummyData.map((data) => (
             <Card key={data.id}>
               <CardActionArea
-                onClick={() => setCenter([100, 50])}
+                onClick={() =>
+                  setCenter([data.coordinates[1], data.coordinates[0]])
+                }
                 sx={{
                   display: "flex",
                   position: "relative",
@@ -93,7 +95,25 @@ const PlannerMap: React.FC = () => {
                 >
                   <CardHeader title={data.title} sx={{ py: 1, px: 2 }} />
                   <CardContent sx={{ py: 1, px: 2 }}>
-                    <Typography variant="body1">{data.description}</Typography>
+                    <Typography
+                      variant="caption"
+                      component={"div"}
+                      sx={{
+                        mb: 1,
+                        ...(data.carbonLevel == 0
+                          ? { color: "success.dark" }
+                          : { color: "warning.dark" }),
+                      }}
+                    >
+                      {data.carbonLevel == 0 ? "Low" : "Medium"} Carbon
+                      Footprint
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{ lineClamp: 4, boxOrient: "vertical" }}
+                    >
+                      {data.description.slice(0, 50)}...
+                    </Typography>
                   </CardContent>
                 </Box>
                 <CardMedia>
@@ -116,7 +136,7 @@ const Map: React.FC<{ center: LngLatLike }> = ({ center }) => {
   const { map } = useMap();
 
   useEffect(() => {
-    map?.flyTo({ center: center });
+    map?.flyTo({ center: center, zoom: 6 });
   }, [center, map]);
 
   return (
@@ -124,12 +144,16 @@ const Map: React.FC<{ center: LngLatLike }> = ({ center }) => {
       // @ts-ignore
       controller={true}
       style={{ height: "50vh" }}
-      mapboxAccessToken={API_KEY}
+      mapboxAccessToken={process.env.MAPBOX_API}
       id="map"
       mapStyle="mapbox://styles/mapbox/light-v11"
     >
-      {true && (
-        <Marker longitude={100} latitude={50}>
+      {dummyData.map((data) => (
+        <Marker
+          key={data.id}
+          longitude={data.coordinates[1]}
+          latitude={data.coordinates[0]}
+        >
           <Box
             sx={{
               width: 0,
@@ -154,7 +178,7 @@ const Map: React.FC<{ center: LngLatLike }> = ({ center }) => {
             </span>
           </Box>
         </Marker>
-      )}
+      ))}
     </GLMap>
   );
 };
