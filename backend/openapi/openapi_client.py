@@ -51,8 +51,7 @@ def fetch_trips(agreed_input):
         random_last_destination = random.choice(last_three_destinations)
 
         # Store the randomly chosen destinations in a variable
-        chosen_destinations = [random_first_destination,
-                               random_next_destination, random_last_destination]
+        chosen_destinations = [random_first_destination, random_next_destination, random_last_destination]
         str_chosen_destinations = str(chosen_destinations)
 
         # Create prompt
