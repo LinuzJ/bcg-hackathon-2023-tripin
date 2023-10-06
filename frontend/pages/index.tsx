@@ -1,8 +1,14 @@
+import Illustration from "@/components/Illustration";
 import MainLayout from "@/layout/MainLayout";
 import HeaderTravelInput from "@/sections/header/HeaderTravelInput";
+import Hero from "@/sections/hero";
+import { useTheme } from "@emotion/react";
+import { Box } from "@mui/material";
 import Head from "next/head";
 
 export default function Home() {
+  const theme = useTheme();
+
   return (
     <>
       <Head>
@@ -11,6 +17,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      {/* <Hero /> */}
       <MainLayout>
         <HeaderTravelInput />
       </MainLayout>

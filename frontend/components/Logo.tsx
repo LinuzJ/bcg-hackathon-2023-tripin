@@ -1,13 +1,11 @@
 import { Box, SxProps } from "@mui/material";
 
-const Logo: React.FC<{ color: string } & SxProps> = ({ color, sx }) => {
+const Logo: React.FC<{ color: string; sx?: SxProps }> = ({ color, sx }) => {
   return (
     <Box
       version="1.1"
       xmlns="http://www.w3.org/2000/svg"
-      x="0px"
-      y="0px"
-      viewBox="-10 0 75 56.2"
+      viewBox="0 0 100 100"
       component="svg"
       sx={{
         "& .st0": {
@@ -24,7 +22,7 @@ const Logo: React.FC<{ color: string } & SxProps> = ({ color, sx }) => {
         ...sx,
       }}
     >
-      <g id="Layer_1">
+      <g id="Layer_1" width={"100%"} height={"100%"}>
         <g>
           <path
             className="st0"

@@ -27,7 +27,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         <Typography variant="h3">{"Trip'in"}</Typography>
       </Box>
       {/* Content */}
-      <Box sx={{ p: 2, height: "200%" }}>{children}</Box>
+      <Box sx={{ p: 2 }}>{children}</Box>
     </>
   );
 };
