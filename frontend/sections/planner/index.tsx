@@ -137,9 +137,10 @@ const HeaderTravelInput: React.FC = () => {
       duration: duration,
     };
 
-    const API_URL = "localhost:5000/generate-trips";
+    const API_URL = "http://127.0.0.1:8000/generate-trips";
     const headers = {
       "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
     };
 
     const response = await axios
