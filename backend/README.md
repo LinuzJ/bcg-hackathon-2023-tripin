@@ -28,7 +28,7 @@ Something
         {
             position: float[], # [long, lat]
             name: string,
-            description: string
+            description: string,
             transportation: string,
             emission: float,
             cost: float
