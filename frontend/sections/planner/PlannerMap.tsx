@@ -59,6 +59,8 @@ const dummyData = [
 const PlannerMap: React.FC = () => {
   const [center, setCenter] = useState<LngLatLike>([6.953101, 50.935173]);
 
+  const [activeLocation, setActiveLocation] = useState<number | null>(null);
+
   return (
     <>
       <MapProvider>
