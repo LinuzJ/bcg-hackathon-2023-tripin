@@ -51,7 +51,8 @@ def fetch_trips(agreed_input):
         random_last_destination = random.choice(last_three_destinations)
 
         # Store the randomly chosen destinations in a variable
-        chosen_destinations = [random_first_destination,random_next_destination, random_last_destination]
+        chosen_destinations = [random_first_destination,
+                               random_next_destination, random_last_destination]
         str_chosen_destinations = str(chosen_destinations)
 
         # Create prompt
@@ -62,7 +63,7 @@ def fetch_trips(agreed_input):
                     {
                         "name": "(destination name) (string)",
                         "position": "[longitude, latitude] (float[] )",
-                        "transportation": "CAR/PLANE/TRAIN/BUS (string)",
+                        "transportation": "DRIVE/PLANE/TRANSIT/TRANSIT (string)",
                         "airport": "(closest airport to the destination) (string)",
                         "description": f"Day 1: ... , Day 2: ... , Day 3: ..., Day 4: ..., ... (all remaining days, day by day) (string)",
                     }
@@ -72,7 +73,7 @@ def fetch_trips(agreed_input):
 
         output_json_str = json.dumps(output_json, indent=4)
 
-        prompt = f"Please output only a JSON file describing a trip and activities according to my {budget} budget in {time_of_year} starting from {starting_position}. The trip should last {duration} weeks. I want to do a mix of {activity} activities. Find activities according to my budget. \n Do this for the following 3 destinations: {str_chosen_destinations}. \n Strict condition 1: I want activities for the complete {duration_days} days. \nStrict condition 2: Output it in exactly this JSON format:\n\n ”trips: [ {{\"name: \", \"position: \", \"transportation: \", \"airport: \",  \"Description of activities: \"}}  , ...]\n \n \"transportation\" should be only \"CAR\", \"PLANE\", \"TRAIN\", \"BUS\" \n Output Example JSON with the datatypes in brackets:\n{output_json_str} \n"
+        prompt = f"Please output only a JSON file describing a trip and activities according to my {budget} budget in {time_of_year} starting from {starting_position}. The trip should last {duration} weeks. I want to do a mix of {activity} activities. Find activities according to my budget. \n Do this for the following 3 destinations: {str_chosen_destinations}. \n Strict condition 1: I want activities for the complete {duration_days} days. \nStrict condition 2: Output it in exactly this JSON format:\n\n ”trips: [ {{\"name: \", \"position: \", \"transportation: \", \"airport: \",  \"Description of activities: \"}}  , ...]\n \n \"transportation\" should be only \"DRIVE\", \"PLANE\", \"TRANSIT\" \n Output Example JSON with the datatypes in brackets:\n{output_json_str} \n"
 
         # Call OpenAPI
 
@@ -106,5 +107,5 @@ def fetch_trips(agreed_input):
         raise e  # Re-raise the exception after handling if required
 
 
-#fetch_trips(agreed_input)
-print(fetch_trips(agreed_input))
+# fetch_trips(agreed_input)
+# print(fetch_trips(agreed_input))

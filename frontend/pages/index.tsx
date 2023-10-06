@@ -1,10 +1,6 @@
-import Illustration from "@/components/Illustration";
 import MainLayout from "@/layout/MainLayout";
 import Planner from "@/sections/planner";
-import Hero from "@/sections/hero";
-import Map from "@/sections/map/Map";
 import { useTheme } from "@emotion/react";
-import { Box } from "@mui/material";
 import Head from "next/head";
 
 export default function Home() {

@@ -1,7 +1,6 @@
 {
-    "CAR": 1.3,
-    "CAR_EV": 1.3,
-    "TRAIN": 1.1,
+    "DRIVE": 1.3,
+    "TRANSIT": 1.1,
     "PLANE_LONG": 1.0,
     "PLANE_SHORT": 1.0
 }
