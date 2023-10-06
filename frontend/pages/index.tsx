@@ -19,12 +19,10 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       {/* <Hero /> */}
-      {/* <MainLayout>
+      <MainLayout>
         <HeaderTravelInput />
-      </MainLayout> */}
-      <main>
-        <Map />
-      </main>
+      </MainLayout>
+      <main>{/* <Map /> */}</main>
     </>
   );
 }

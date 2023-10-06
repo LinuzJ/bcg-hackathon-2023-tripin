@@ -195,7 +195,7 @@ const HeaderTravelInput: React.FC = () => {
               </div>
               {/* Activity */}
               <Typography variant="h5">
-                {"What is your preferred level of activity?"}
+                {"What is your preferred activity?"}
               </Typography>
               <div>
                 <Grid container spacing={1} sx={{ width: 1 }}>
