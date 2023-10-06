@@ -144,7 +144,7 @@ const Map: React.FC<{ center: LngLatLike }> = ({ center }) => {
       // @ts-ignore
       controller={true}
       style={{ height: "50vh" }}
-      mapboxAccessToken={process.env.MAPBOX_API}
+      mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_API}
       id="map"
       mapStyle="mapbox://styles/mapbox/light-v11"
     >
