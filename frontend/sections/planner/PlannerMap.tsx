@@ -11,18 +11,22 @@ import {
 } from "./mapConfig";
 import {
   Box,
+  Button,
   Card,
   CardActionArea,
   CardContent,
   CardHeader,
   CardMedia,
+  List,
+  ListItem,
   Stack,
   Typography,
 } from "@mui/material";
-import { MapPin, MapPinLine } from "@phosphor-icons/react";
+import { ListBullets, MapPin, MapPinLine } from "@phosphor-icons/react";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import { LayoutGroup, motion } from "framer-motion";
+import photoGenerator from "@/api/photo";
 
 const dummyData = [
   {
@@ -34,6 +38,27 @@ const dummyData = [
     image:
       "https://i.guim.co.uk/img/media/82f98ba14fde31d4605f541794e5456e11201644/379_271_5327_3196/master/5327.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=5a75229ff2184a9e8f1b68f2ce20dbf0",
     carbonLevel: 0,
+    itinerary: [
+      {
+        id: 0,
+        title: "Cologne Cathedral",
+        coordinates: [50.941357, 6.958307],
+        description:
+          "Visit the iconic Cologne Cathedral (Kölner Dom), which is free to enter but consider a small donation.",
+        image:
+          "https://i.guim.co.uk/img/media/82f98ba14fde31d4605f541794e5456e11201644/379_271_5327_3196/master/5327.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=5a75229ff2184a9e8f1b68f2ce20dbf0",
+        carbonLevel: 0,
+      },
+      {
+        id: 1,
+        title: "Rhine River",
+        coordinates: [50.938491, 6.959456],
+        description: "Stroll along the Rhine River and enjoy the scenic views.",
+        image:
+          "https://www.planetware.com/photos-large/D/cologne-germany-cologne-cathedral-and-rhine-river.jpg",
+        carbonLevel: 0,
+      },
+    ],
   },
   {
     id: 1,
@@ -60,17 +85,24 @@ const dummyData = [
 const PlannerMap: React.FC = () => {
   const [center, setCenter] = useState<LngLatLike>([6.953101, 50.935173]);
   const [activeLocation, setActiveLocation] = useState<number>(0);
+  const [isViewingItinerary, setIsViewingItinerary] = useState(false);
 
   const handleActiveLocationChange = (data: any) => {
     setActiveLocation(data.id);
     setCenter([data.coordinates[1], data.coordinates[0]]);
-    document.getElementById("top").scrollIntoView({ behavior: "smooth" });
+    if (document) {
+      document.getElementById("top")?.scrollIntoView({ behavior: "smooth" });
+    }
   };
+
+  const handleViewItinerary = () => {
+    setIsViewingItinerary(!isViewingItinerary);
+  };
+
   return (
     <>
-      <div id="top" />
       <MapProvider>
-        <Map center={center} />
+        <Map height={isViewingItinerary ? "0" : "50vh"} center={center} />
       </MapProvider>
       <Box
         sx={{
@@ -78,41 +110,71 @@ const PlannerMap: React.FC = () => {
           bgcolor: "background.paper",
           bottom: 0,
           left: 0,
-          boxShadow: (theme) => theme.customShadows.z24,
           p: 2,
         }}
       >
         <LayoutGroup>
-          <Typography variant="h3">Travel Suggestions</Typography>
+          {isViewingItinerary ? (
+            <Box sx={{ height: 1, textAlign: "center", mb: 2 }}>
+              <Button
+                onClick={handleViewItinerary}
+                variant="contained"
+                color="inherit"
+              >
+                View all suggestions
+              </Button>
+            </Box>
+          ) : (
+            <Typography mb={2} variant="h3">
+              Travel Suggestions
+            </Typography>
+          )}
           {dummyData
             .sort((data) => (data.id == activeLocation ? -1 : 1))
+            .slice(0, isViewingItinerary ? 1 : 3)
             .map((data) => (
               <motion.div layout key={data.id}>
-                <Card>
+                <Card
+                  sx={{
+                    mb: 2,
+                    ...(isViewingItinerary && { mx: -2 }),
+                  }}
+                >
                   <CardActionArea
                     onClick={() => handleActiveLocationChange(data)}
                     sx={{
                       display: "flex",
                       position: "relative",
+                      flexDirection: isViewingItinerary ? "column" : "row",
+                      height: isViewingItinerary ? "auto" : 100,
                       alignItems: "stretch",
-                      // border: "2px solid",
-                      borderColor: "primary.main",
+                      ...(data.id == activeLocation && {
+                        // border: "2px solid",
+                        borderColor: "primary.main",
+                      }),
                     }}
                   >
                     <Box
                       sx={{
                         display: "flex",
-                        flexDirection: "column",
-                        flexGrow: 1,
+                        flexDirection: isViewingItinerary ? "row" : "column",
+                        ...(!isViewingItinerary && { flexGrow: 1 }),
                       }}
                     >
-                      <CardHeader title={data.title} sx={{ py: 1, px: 2 }} />
-                      <CardContent sx={{ py: 1, px: 2 }}>
+                      <Stack
+                        sx={{
+                          py: 1,
+                          px: 2,
+                          height: 1,
+                          justifyContent: "space-between",
+                          flexDirection: "column",
+                        }}
+                      >
+                        <Typography variant="h5">{data.title}</Typography>
                         <Typography
                           variant="caption"
                           component={"div"}
                           sx={{
-                            mb: 1,
                             ...(data.carbonLevel == 0
                               ? { color: "success.dark" }
                               : { color: "warning.dark" }),
@@ -121,22 +183,48 @@ const PlannerMap: React.FC = () => {
                           {data.carbonLevel == 0 ? "Low" : "Medium"} Carbon
                           Footprint
                         </Typography>
-                        <Typography
-                          variant="body2"
-                          sx={{ lineClamp: 4, boxOrient: "vertical" }}
-                        >
-                          {data.description.slice(0, 50)}...
-                        </Typography>
-                      </CardContent>
+                      </Stack>
                     </Box>
                     <CardMedia>
                       <Box
                         component="img"
-                        sx={{ width: 150, height: 1 }}
+                        sx={{
+                          width: isViewingItinerary ? 1 : 150,
+                          height: isViewingItinerary ? 200 : 1,
+                          objectFit: "cover",
+                        }}
                         src={data.image}
                       />
                     </CardMedia>
+                    <Box>
+                      <List>
+                        {isViewingItinerary &&
+                          data.itinerary?.map((item, i) => (
+                            <ListItem key={i}>
+                              {i + 1}. {item.description}
+                            </ListItem>
+                          ))}
+                      </List>
+                    </Box>
                   </CardActionArea>
+                  {data.id == activeLocation && !isViewingItinerary && (
+                    <Button
+                      onClick={handleViewItinerary}
+                      fullWidth
+                      variant="contained"
+                      color="primary"
+                      sx={{
+                        borderRadius: 0,
+                        // bgcolor: "grey.900",
+                        "&:hover": {
+                          // bgcolor: "grey.800",
+                        },
+                      }}
+                      endIcon={<ListBullets />}
+                    >
+                      View Itinerary
+                    </Button>
+                  )}
                 </Card>
               </motion.div>
             ))}
@@ -146,7 +234,10 @@ const PlannerMap: React.FC = () => {
   );
 };
 
-const Map: React.FC<{ center: LngLatLike }> = ({ center }) => {
+const Map: React.FC<{ center: LngLatLike; height: string }> = ({
+  center,
+  height,
+}) => {
   const { map } = useMap();
 
   useEffect(() => {
@@ -157,7 +248,7 @@ const Map: React.FC<{ center: LngLatLike }> = ({ center }) => {
     <GLMap
       // @ts-ignore
       controller={true}
-      style={{ height: "50vh" }}
+      style={{ height: height }}
       mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_API}
       id="map"
       mapStyle="mapbox://styles/mapbox/light-v11"

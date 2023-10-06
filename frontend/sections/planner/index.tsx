@@ -31,7 +31,7 @@ const HeaderTravelInput: React.FC = () => {
     duration: 2,
   });
 
-  const [formStep, setFormStep] = useState(1);
+  const [formStep, setFormStep] = useState(0);
 
   const onFormStateChange = (
     key: keyof FormStateProps,
