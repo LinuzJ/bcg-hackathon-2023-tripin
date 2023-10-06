@@ -32,6 +32,8 @@ def get_maps_distance(start_lat, start_long, end_lat, end_long, travel_mode):
     }
 
     response = requests.post(url, headers=headers, json=data).json()
+    print("inputs : ", start_lat, start_long, end_lat, end_long, travel_mode)
+    print(response)
     distance = response["routes"][0]["distanceMeters"]
 
     return distance
