@@ -6,7 +6,7 @@ import time
 
 openai.api_key = "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"
 
-""" agreed_input = {
+agreed_input = {
     "starting_position": "Madrid",
     "activity": "cultural",
     "climate": "mountaineous",
@@ -14,7 +14,7 @@ openai.api_key = "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"
     "time_of_year": "june",
     "single_trip": 1,
     "duration": 3
-} """
+}
 
 
 def fetch_trips(agreed_input):
