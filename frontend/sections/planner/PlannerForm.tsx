@@ -27,8 +27,11 @@ import {
   Snowflake,
   Bed,
   CaretDown,
+  Robot,
+  Brain,
 } from "@phosphor-icons/react";
 import axios from "axios";
+import AnimatedLogo from "@/components/AnimatedLogo";
 
 const climates = [
   { id: "tropical", name: "Tropical", icon: TreePalm },
@@ -63,7 +66,7 @@ type PlannerForm = {
     key: keyof FormStateProps,
     newValue: FormStateProps[keyof FormStateProps]
   ) => void;
-  onSuccess: () => void;
+  onSuccess: (data: any) => void;
 };
 
 const PlannerForm: React.FC<PlannerForm> = ({
@@ -80,14 +83,15 @@ const PlannerForm: React.FC<PlannerForm> = ({
     const data = {
       starting_position:
         formState.starting_position.structured_formatting.main_text,
-      activity: formState.activity,
+      activity: formState.activity[0],
       climate: formState.climate,
-      budget: formState.budget,
+      budget: formState.budget[1],
       time_of_year: formState.time_of_year,
       duration: formState.duration + "",
     };
 
-    const API_URL = "http://127.0.0.1:8000/generate-trips";
+    const API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
+
     const headers = {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
@@ -95,20 +99,23 @@ const PlannerForm: React.FC<PlannerForm> = ({
 
     setIsLoading(true);
 
+    if (API_URL === undefined) {
+      console.error("Cannot find API URL");
+    }
+
     const response = await axios
-      .post(API_URL, data, { headers })
+      .post(API_URL as string, data, { headers })
       .then((response) => {
         setIsLoading(false);
-        console.log(response);
+        onSuccess(response.data.data.trips);
         return response;
       })
       .catch((error) => {
         setIsLoading(false);
         console.log("Error in get multiple suggestions:" + error);
-        return null;
+        onSuccess("error");
+        return "error";
       });
-
-    onSuccess();
   };
 
   return (
@@ -177,7 +184,7 @@ const PlannerForm: React.FC<PlannerForm> = ({
                       },
                     }}
                     value={formState?.duration}
-                    max={8}
+                    max={4}
                     min={1}
                     step={1}
                     onChange={(_, v) =>
@@ -299,28 +306,13 @@ const PlannerForm: React.FC<PlannerForm> = ({
                 size="large"
                 variant="contained"
               >
-                Find my Trip
+                {"Start Trip'in"}
               </Button>
             </Stack>
           </Box>
         </AccordionDetails>
       </Accordion>
-      {isLoading && (
-        <Box
-          sx={{
-            width: 1,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            flexDirection: "column",
-            height: "50%",
-          }}
-        >
-          <CircularProgress />
-
-          <Typography variant="h3">{"Generating your trip..."}</Typography>
-        </Box>
-      )}
+      {isLoading && <AnimatedLogo />}
     </>
   );
 };

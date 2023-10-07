@@ -4,7 +4,7 @@ export const remToPx: (value: string) => number = (value) => {
 };
 
 export const pxToRem: (value: number) => string = (value) => {
-  return value / 16 + "rem";
+  return value / 18 + "rem";
 };
 
 export const responsiveFontSizes = ({

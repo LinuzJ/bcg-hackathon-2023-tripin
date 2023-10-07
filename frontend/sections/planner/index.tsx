@@ -1,10 +1,11 @@
 "use client";
 
 import { PlaceType } from "@/components/GoogleMaps";
-import { Box } from "@mui/material";
+import { Alert, Box } from "@mui/material";
 import { useState } from "react";
 import PlannerForm from "./PlannerForm";
 import PlannerMap from "./PlannerMap";
+import { error } from "console";
 
 export interface FormStateProps {
   starting_position: PlaceType;
@@ -31,13 +32,17 @@ const HeaderTravelInput: React.FC = () => {
     duration: 2,
   });
 
+  const [loading, setIsLoading] = useState(false);
+
   const [formStep, setFormStep] = useState(0);
+  const [showError, setShowError] = useState(false);
 
   const onFormStateChange = (
     key: keyof FormStateProps,
     newValue: FormStateProps[keyof FormStateProps]
   ) => {
     const updatedFormState = { ...formState } as FormStateProps;
+    setShowError(false);
 
     if (updatedFormState === undefined) {
       return updatedFormState;
@@ -63,22 +68,34 @@ const HeaderTravelInput: React.FC = () => {
     setFormState(updatedFormState);
   };
 
-  const onFormSuccess = () => {
+  const [data, setData] = useState(null);
+
+  const onFormSuccess = (data: any) => {
+    if (data == "error") {
+      setShowError(true);
+      return;
+    }
     setFormStep(1);
+    setData(data);
   };
 
   return (
     <>
-      {formStep == 0 && (
-        <Box p={2}>
-          <PlannerForm
-            formState={formState}
-            onFormStateChange={onFormStateChange}
-            onSuccess={onFormSuccess}
-          />
-        </Box>
+      <Box px={2}>
+        <PlannerForm
+          formState={formState}
+          onFormStateChange={onFormStateChange}
+          onSuccess={onFormSuccess}
+        />
+      </Box>
+
+      {showError && (
+        <Alert severity="warning">
+          {"Oops! We trip'd out of bounds, please try again."}
+        </Alert>
       )}
-      {formStep == 1 && <PlannerMap />}
+
+      {data && <PlannerMap data={data} />}
     </>
   );
 };

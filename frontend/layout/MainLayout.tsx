@@ -15,10 +15,12 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       <Box
         id="top"
         sx={{
-          p: 2,
+          p: 1,
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          borderBottom: "1px solid",
+          borderColor: "divider",
         }}
       >
         <Logo
@@ -29,7 +31,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         <Typography variant="h3">{"Trip'in"}</Typography>
       </Box>
       {/* Content */}
-      <Box>{children}</Box>
+      <Box sx={{ maxWidth: 400, margin: "0 auto" }}>{children}</Box>
     </>
   );
 };
