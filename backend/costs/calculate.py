@@ -33,6 +33,7 @@ def _plane_cost(start_airport, end_airport) -> float:
     except Exception as e:
         return None
 
+
 def _get_flight_prices(origin, destination, date):
     base_url = "https://partners.api.skyscanner.net/apiservices/v3/flights/indicative/search"
 
@@ -50,12 +51,12 @@ def _get_flight_prices(origin, destination, date):
                 {
                     "originPlace": {
                         "queryPlace": {
-                            "iata": origin # The IATA code for the "London Heathrow" airport
+                            "iata": origin  # The IATA code for the "London Heathrow" airport
                         }
                     },
                     "destinationPlace": {
                         "queryPlace": {
-                            "iata": destination # The IATA code for the "London Heathrow" airport
+                            "iata": destination  # The IATA code for the "London Heathrow" airport
                         }
                     },
                     "anytime": True
@@ -65,11 +66,20 @@ def _get_flight_prices(origin, destination, date):
     }
 
     response = requests.post(base_url, headers=headers, json=data)
-    data = response.json()["content"]
-    quotes = data['results']['quotes']
+
+    try:
+        data = response.json()["content"]
+        quotes = data['results']['quotes']
+    except Exception as e:
+        print("ERROR: ", e)
+        print("CALLING SKYSCANNER AGAIN!")
+        response = requests.post(base_url, headers=headers, json=data)
+        data = response.json()["content"]
+        quotes = data['results']['quotes']
 
     # Finding the cheapest quote based on minPrice
-    cheapest_quote = min(quotes.values(), key=lambda x: int(x['minPrice']['amount']))
+    cheapest_quote = min(
+        quotes.values(), key=lambda x: int(x['minPrice']['amount']))
     cheapest_price = cheapest_quote['minPrice']['amount']
-    
+
     return cheapest_price
