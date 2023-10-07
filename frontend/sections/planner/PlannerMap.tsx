@@ -10,12 +10,22 @@ import {
   Card,
   CardActionArea,
   CardMedia,
+  Dialog,
+  IconButton,
   List,
   ListItem,
+  Popover,
   Stack,
   Typography,
+  useTheme,
 } from "@mui/material";
-import { ListBullets, MapPin } from "@phosphor-icons/react";
+import {
+  Info,
+  ListBullets,
+  MapPin,
+  Tree,
+  TreeEvergreen,
+} from "@phosphor-icons/react";
 import { LayoutGroup, motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 
@@ -79,29 +89,43 @@ const PlannerMap: React.FC<{ data: any }> = ({ data }) => {
   const [isViewingItinerary, setIsViewingItinerary] = useState(false);
   const [photos, setPhotos] = useState<string[]>([]);
 
+  const theme = useTheme();
   const [result, setResult] = useState();
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleInfoClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleInfoClose = () => {
+    setAnchorEl(null);
+  };
+
+  const showPopover = Boolean(anchorEl);
 
   useEffect(() => {
     if (!data) return;
-    setResult(
-      data.map((d, i) => ({
-        ...d,
-        id: i,
-        position: d.position.map((p) => Math.min(Math.max(p, -90), 90)),
-      }))
-    );
-    setCenter([data[0].position[0], data[0].position[1]]);
-    if (!result) return;
+    const input = data.map((d, i) => ({
+      ...d,
+      id: i,
+      position: d.position.map((p) => Math.min(Math.max(p, -90), 90)),
+    }));
 
-    const getPhotos = async () => {
-      const photoArray = await Promise.all(
-        (result as any).map(async (data: any) => {
-          return await imageGenerator(data.name);
-        })
-      );
-      setPhotos(photoArray.map((photo) => photo ?? ""));
-    };
-    getPhotos();
+    setResult(input);
+    setCenter([input[0].position[0], input[0].position[1]]);
+    if (!input) return;
+
+    if (input) {
+      const getPhotos = async () => {
+        const photoArray = await Promise.all(
+          (input as any).map(async (data: any) => {
+            return await imageGenerator(data.name);
+          })
+        );
+        setPhotos(photoArray.map((photo) => photo ?? ""));
+      };
+      getPhotos();
+    }
   }, [data]);
 
   const handleActiveLocationChange = (data: any) => {
@@ -147,9 +171,31 @@ const PlannerMap: React.FC<{ data: any }> = ({ data }) => {
               </Button>
             </Box>
           ) : (
-            <Typography mb={2} variant="h3">
-              Travel Suggestions
-            </Typography>
+            <Stack
+              direction="row"
+              sx={{
+                width: 1,
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <Typography mb={2} variant="h3">
+                Travel Suggestions
+              </Typography>
+              <IconButton sx={{ mt: -2 }} onClick={handleInfoClick}>
+                <Info />
+              </IconButton>
+              <Dialog open={showPopover} onClose={handleInfoClose}>
+                <Typography variant="h4" sx={{ p: 2 }}>
+                  Travel suggestions information
+                </Typography>
+                <Typography sx={{ p: 2 }}>
+                  Emissions: The trees <Tree weight="fill" /> represent the
+                  amount of trees you would need to compensate your trip in
+                  terms of CO2 emissions for a whole year.
+                </Typography>
+              </Dialog>
+            </Stack>
           )}
           {result &&
             (result as any[])
@@ -169,7 +215,7 @@ const PlannerMap: React.FC<{ data: any }> = ({ data }) => {
                         display: "flex",
                         position: "relative",
                         flexDirection: isViewingItinerary ? "column" : "row",
-                        height: isViewingItinerary ? "auto" : 100,
+                        height: isViewingItinerary ? "auto" : 150,
                         alignItems: "stretch",
                         ...(data.id == activeLocation && {
                           // border: "2px solid",
@@ -198,12 +244,49 @@ const PlannerMap: React.FC<{ data: any }> = ({ data }) => {
                             variant="caption"
                             component={"div"}
                             sx={{
-                              ...(data.carbonLevel == 0
-                                ? { color: "success.dark" }
-                                : { color: "warning.dark" }),
+                              "& svg": {
+                                ml: -0.5,
+                                "& path:last-child": {
+                                  stroke: "white",
+                                  strokeWidth: 15,
+                                },
+                              },
                             }}
                           >
-                            {data.emission}
+                            {Math.round(data.emission) % 10 == 0 ? (
+                              "Missing emissions data"
+                            ) : (
+                              <>
+                                {new Array(Math.round(data.emission) % 10)
+                                  .fill(0)
+                                  .map((num, index) => {
+                                    return (
+                                      <Tree
+                                        key={index}
+                                        weight="fill"
+                                        size={18}
+                                        color={theme.palette.grey[900]}
+                                      />
+                                    );
+                                  })}
+                                x 5
+                              </>
+                            )}
+                          </Typography>
+                          <Typography variant="caption" component={"div"}>
+                            Travel cost:{" "}
+                            {Math.round(data.cost, 0) == 0 ? (
+                              "Missing cost"
+                            ) : (
+                              <>€{Math.round(data.cost, 0)}</>
+                            )}
+                          </Typography>
+                          <Typography variant="caption" component={"div"}>
+                            Travel mode: {data.transportation.toLowerCase()}
+                          </Typography>
+                          <Typography variant="caption" component={"div"}>
+                            Travel distance:{" "}
+                            {Math.round(data.travel_distance, 0)} km
                           </Typography>
                         </Stack>
                       </Box>

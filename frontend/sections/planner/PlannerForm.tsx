@@ -31,6 +31,7 @@ import {
   Brain,
 } from "@phosphor-icons/react";
 import axios from "axios";
+import AnimatedLogo from "@/components/AnimatedLogo";
 
 const climates = [
   { id: "tropical", name: "Tropical", icon: TreePalm },
@@ -112,7 +113,8 @@ const PlannerForm: React.FC<PlannerForm> = ({
       .catch((error) => {
         setIsLoading(false);
         console.log("Error in get multiple suggestions:" + error);
-        return null;
+        onSuccess("error");
+        return "error";
       });
   };
 
@@ -310,22 +312,7 @@ const PlannerForm: React.FC<PlannerForm> = ({
           </Box>
         </AccordionDetails>
       </Accordion>
-      {isLoading && (
-        <Box
-          sx={{
-            width: 1,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            flexDirection: "column",
-            height: "50%",
-          }}
-        >
-          <CircularProgress />
-
-          <Typography variant="h3">{"Generating your trip..."}</Typography>
-        </Box>
-      )}
+      {isLoading && <AnimatedLogo />}
     </>
   );
 };
