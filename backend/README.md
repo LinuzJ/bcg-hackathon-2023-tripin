@@ -52,3 +52,11 @@ From trips-client we need:
     ]
 }
 ```
+
+## Deploy stuff
+
+To get the flask server to work in production we need:
+
+- nginx receives requests on port 80 to serve HTTP requests to Gunicorn
+- Gunicorn forwards and translates the HTTP requests to WSGI understandable requests
+- The flask application recieves WSGI requests from Gunicorn and returns through the pipeline out
