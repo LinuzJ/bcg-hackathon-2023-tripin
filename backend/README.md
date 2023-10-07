@@ -52,3 +52,10 @@ From trips-client we need:
     ]
 }
 ```
+
+## Deploy stuff
+
+To get the flask server to work in production we need:
+
+- nginx receives requests on port 80 to serve HTTP requests to Flask on port 8000 on local
+- The flask application recieves requests from nginx

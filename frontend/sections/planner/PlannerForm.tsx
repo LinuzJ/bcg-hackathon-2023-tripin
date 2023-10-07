@@ -182,7 +182,7 @@ const PlannerForm: React.FC<PlannerForm> = ({
                       },
                     }}
                     value={formState?.duration}
-                    max={8}
+                    max={4}
                     min={1}
                     step={1}
                     onChange={(_, v) =>
