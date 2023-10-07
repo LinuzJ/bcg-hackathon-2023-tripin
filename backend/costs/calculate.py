@@ -1,7 +1,5 @@
-from random import random
 import requests
 from datetime import datetime
-from utils.distance import get_distance
 
 
 def calculate_cost(distance, travel_mode: str, start_airport="JFK", end_airport="LAX"):
