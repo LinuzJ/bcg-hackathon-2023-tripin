@@ -10,12 +10,6 @@ import io
 polly_client = boto3.client('polly')
 
 
-# budget = "1000"
-# time_of_year = "december"
-# starting_position = "dusseldorf"
-# climate = "mediterrenean"
-# duration = "2"
-
 schema = {
     "budget": "1000",
     "time_of_year": "december",
@@ -40,48 +34,4 @@ def generate_audio(inputs = schema, stream_audio = True):
     rate = 16000
     # Create a PyAudio stream
     audio_stream = io.BytesIO(response['AudioStream'].read())
-    audio_player = pyaudio.PyAudio()
-    stream = audio_player.open(format=pyaudio.paInt16,
-                            channels=1,
-                            rate=rate,
-                            output=True)
-
-    # Play the audio data
-    chunk_size = 1024
-    data = audio_stream.read(chunk_size)
-    
-    if stream_audio:
-        while data:
-            stream.write(data)
-            data = audio_stream.read(chunk_size)
-
-        # Stop and close the audio stream
-        stream.stop_stream()
-        stream.close()
-        audio_player.terminate()
-    else:
-        # while data:
-        #     stream.write(data)
-        #     data = audio_stream.read(chunk_size)
-
-        # # Stop and close the audio stream
-        # stream.stop_stream()
-        # stream.close()
-        # audio_player.terminate()
-
-        return data
-        # # Save to a temporary WAV file
-        # temp_wav_file = tempfile.NamedTemporaryFile(delete=False, suffix=".wav")
-        # with open(temp_wav_file.name, 'wb') as temp_file:
-        #     temp_file.write(audio_stream.getvalue())
-
-        # # Convert the WAV file to MP3
-        # filename = tempfile.mktemp(suffix=".mp3")
-        # pcm_audio = AudioSegment.from_wav(temp_wav_file.name)
-        # pcm_audio.export(filename, format="mp3")
-
-        # # Clean up temporary files
-        # temp_wav_file.close()
-        # return filename
-
-# generate_audio({"1":1}, False)
+    return audio_stream.getvalue()
