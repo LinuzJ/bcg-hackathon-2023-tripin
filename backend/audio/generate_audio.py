@@ -1,3 +1,4 @@
+import tempfile
 import boto3
 import pyaudio
 from pydub import AudioSegment
@@ -36,12 +37,13 @@ def generate_audio(inputs = schema, stream_audio = True):
     text = f"You asked for a trip from {starting_position}, to a {climate} climate, lasting {duration} weeks and you would like to travel in {time_of_year}. I'll see what I can do... According to my calculations three possible destinations with a budget of {budget} euros are {chosen_destinations[0]}, {chosen_destinations[1]} and {chosen_destinations[2]}"
     response = polly_client.synthesize_speech(Text=text, OutputFormat='pcm', VoiceId='Joanna')
 
+    rate = 16000
     # Create a PyAudio stream
     audio_stream = io.BytesIO(response['AudioStream'].read())
     audio_player = pyaudio.PyAudio()
     stream = audio_player.open(format=pyaudio.paInt16,
                             channels=1,
-                            rate=16000,
+                            rate=rate,
                             output=True)
 
     # Play the audio data
@@ -58,23 +60,28 @@ def generate_audio(inputs = schema, stream_audio = True):
         stream.close()
         audio_player.terminate()
     else:
+        # while data:
+        #     stream.write(data)
+        #     data = audio_stream.read(chunk_size)
 
-        # Assuming `data` contains the audio data in PCM format
-        pcm_audio = AudioSegment(
-            data=data,
-            sample_width=2,  # 16-bit audio
-            frame_rate=16000,
-            channels=1  # Mono audio
-        )
+        # # Stop and close the audio stream
+        # stream.stop_stream()
+        # stream.close()
+        # audio_player.terminate()
 
-        # Save to a temporary WAV file
-        temp_wav_file = "temp.wav"
-        pcm_audio.export(temp_wav_file, format="wav")
+        return data
+        # # Save to a temporary WAV file
+        # temp_wav_file = tempfile.NamedTemporaryFile(delete=False, suffix=".wav")
+        # with open(temp_wav_file.name, 'wb') as temp_file:
+        #     temp_file.write(audio_stream.getvalue())
 
-        # Convert the WAV file to MP3
-        filename = "output.mp3"
-        mp3_audio = AudioSegment.from_wav(temp_wav_file)
-        mp3_audio.export(filename, format="mp3")
-        return filename
+        # # Convert the WAV file to MP3
+        # filename = tempfile.mktemp(suffix=".mp3")
+        # pcm_audio = AudioSegment.from_wav(temp_wav_file.name)
+        # pcm_audio.export(filename, format="mp3")
+
+        # # Clean up temporary files
+        # temp_wav_file.close()
+        # return filename
 
 # generate_audio({"1":1}, False)
