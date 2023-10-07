@@ -65,7 +65,7 @@ type PlannerForm = {
     key: keyof FormStateProps,
     newValue: FormStateProps[keyof FormStateProps]
   ) => void;
-  onSuccess: () => void;
+  onSuccess: (data: any) => void;
 };
 
 const PlannerForm: React.FC<PlannerForm> = ({
@@ -82,9 +82,9 @@ const PlannerForm: React.FC<PlannerForm> = ({
     const data = {
       starting_position:
         formState.starting_position.structured_formatting.main_text,
-      activity: formState.activity,
+      activity: formState.activity[0],
       climate: formState.climate,
-      budget: formState.budget,
+      budget: formState.budget[1],
       time_of_year: formState.time_of_year,
       duration: formState.duration + "",
     };
@@ -106,7 +106,7 @@ const PlannerForm: React.FC<PlannerForm> = ({
       .post(API_URL as string, data, { headers })
       .then((response) => {
         setIsLoading(false);
-        console.log(response);
+        onSuccess(response.data.data.trips);
         return response;
       })
       .catch((error) => {
@@ -114,8 +114,6 @@ const PlannerForm: React.FC<PlannerForm> = ({
         console.log("Error in get multiple suggestions:" + error);
         return null;
       });
-
-    onSuccess();
   };
 
   return (

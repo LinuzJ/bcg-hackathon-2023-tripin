@@ -1,33 +1,23 @@
-import GLMap, { Marker, MapProvider, useMap, LngLatLike } from "react-map-gl";
-import { HexagonLayer } from "@deck.gl/aggregation-layers/typed";
-import DeckGL from "@deck.gl/react/typed";
-import "mapbox-gl/dist/mapbox-gl.css";
+// @ts-nocheck
 
-import {
-  lightingEffect,
-  material,
-  INITIAL_VIEW_STATE,
-  colorRange,
-} from "./mapConfig";
+import "mapbox-gl/dist/mapbox-gl.css";
+import GLMap, { LngLatLike, MapProvider, Marker, useMap } from "react-map-gl";
+
+import imageGenerator from "@/api/photo";
 import {
   Box,
   Button,
   Card,
   CardActionArea,
-  CardContent,
-  CardHeader,
   CardMedia,
   List,
   ListItem,
   Stack,
   Typography,
 } from "@mui/material";
-import { ListBullets, MapPin, MapPinLine } from "@phosphor-icons/react";
-import Image from "next/image";
-import React, { useEffect, useRef, useState } from "react";
+import { ListBullets, MapPin } from "@phosphor-icons/react";
 import { LayoutGroup, motion } from "framer-motion";
-import photoGenerator from "@/api/photo";
-import imageGenerator from "@/api/photo";
+import React, { useEffect, useState } from "react";
 
 const dummyData = [
   {
@@ -83,27 +73,41 @@ const dummyData = [
   },
 ];
 
-const PlannerMap: React.FC = () => {
+const PlannerMap: React.FC<{ data: any }> = ({ data }) => {
   const [center, setCenter] = useState<LngLatLike>([6.953101, 50.935173]);
   const [activeLocation, setActiveLocation] = useState<number>(0);
   const [isViewingItinerary, setIsViewingItinerary] = useState(false);
   const [photos, setPhotos] = useState<string[]>([]);
 
+  const [result, setResult] = useState();
+
   useEffect(() => {
+    if (!data) return;
+    setResult(
+      data.map((d, i) => ({
+        ...d,
+        id: i,
+        position: d.position.map((p) => Math.min(Math.max(p, -90), 90)),
+      }))
+    );
+    setCenter([data[0].position[0], data[0].position[1]]);
+    if (!result) return;
+
     const getPhotos = async () => {
       const photoArray = await Promise.all(
-        dummyData.map(async (data) => {
-          return await imageGenerator(data.title);
+        (result as any).map(async (data: any) => {
+          return await imageGenerator(data.name);
         })
       );
       setPhotos(photoArray.map((photo) => photo ?? ""));
     };
     getPhotos();
-  });
+  }, [data]);
 
   const handleActiveLocationChange = (data: any) => {
     setActiveLocation(data.id);
-    setCenter([data.coordinates[1], data.coordinates[0]]);
+    setCenter([data.position[0], data.position[1]]);
+
     if (document) {
       document.getElementById("top")?.scrollIntoView({ behavior: "smooth" });
     }
@@ -116,7 +120,11 @@ const PlannerMap: React.FC = () => {
   return (
     <>
       <MapProvider>
-        <Map height={isViewingItinerary ? "0" : "50vh"} center={center} />
+        <Map
+          height={isViewingItinerary ? "0" : "50vh"}
+          center={center}
+          result={result}
+        />
       </MapProvider>
       <Box
         sx={{
@@ -143,114 +151,121 @@ const PlannerMap: React.FC = () => {
               Travel Suggestions
             </Typography>
           )}
-          {dummyData
-            .sort((data) => (data.id == activeLocation ? -1 : 1))
-            .slice(0, isViewingItinerary ? 1 : 3)
-            .map((data, i) => (
-              <motion.div layout key={data.id}>
-                <Card
-                  sx={{
-                    mb: 2,
-                    ...(isViewingItinerary && { mx: -2 }),
-                  }}
-                >
-                  <CardActionArea
-                    onClick={() => handleActiveLocationChange(data)}
+          {result &&
+            (result as any[])
+              .sort((data) => (data.id == activeLocation ? -1 : 1))
+              .slice(0, isViewingItinerary ? 1 : 3)
+              .map((data, i) => (
+                <motion.div layout key={data.id}>
+                  <Card
                     sx={{
-                      display: "flex",
-                      position: "relative",
-                      flexDirection: isViewingItinerary ? "column" : "row",
-                      height: isViewingItinerary ? "auto" : 100,
-                      alignItems: "stretch",
-                      ...(data.id == activeLocation && {
-                        // border: "2px solid",
-                        borderColor: "primary.main",
-                      }),
+                      mb: 2,
+                      ...(isViewingItinerary && { mx: -2 }),
                     }}
                   >
-                    <Box
+                    <CardActionArea
+                      onClick={() => handleActiveLocationChange(data)}
                       sx={{
                         display: "flex",
-                        flexDirection: isViewingItinerary ? "row" : "column",
-                        ...(!isViewingItinerary && { flexGrow: 1 }),
+                        position: "relative",
+                        flexDirection: isViewingItinerary ? "column" : "row",
+                        height: isViewingItinerary ? "auto" : 100,
+                        alignItems: "stretch",
+                        ...(data.id == activeLocation && {
+                          // border: "2px solid",
+                          borderColor: "primary.main",
+                        }),
                       }}
                     >
-                      <Stack
+                      <Box
                         sx={{
-                          py: 1,
-                          px: 2,
-                          height: 1,
-                          justifyContent: "space-between",
-                          flexDirection: "column",
+                          display: "flex",
+                          flexDirection: isViewingItinerary ? "row" : "column",
+                          ...(!isViewingItinerary && { flexGrow: 1 }),
                         }}
                       >
-                        <Typography variant="h5">{data.title}</Typography>
-                        <Typography
-                          variant="caption"
-                          component={"div"}
+                        <Stack
                           sx={{
-                            ...(data.carbonLevel == 0
-                              ? { color: "success.dark" }
-                              : { color: "warning.dark" }),
+                            py: 1,
+                            px: 2,
+                            height: 1,
+                            justifyContent: "space-between",
+                            flexDirection: "column",
                           }}
                         >
-                          {data.carbonLevel == 0 ? "Low" : "Medium"} Carbon
-                          Footprint
-                        </Typography>
-                      </Stack>
-                    </Box>
-                    <CardMedia>
-                      <Box
-                        component="img"
+                          <Typography variant="h5">{data.name}</Typography>
+                          <Typography
+                            variant="caption"
+                            component={"div"}
+                            sx={{
+                              ...(data.carbonLevel == 0
+                                ? { color: "success.dark" }
+                                : { color: "warning.dark" }),
+                            }}
+                          >
+                            {data.emission}
+                          </Typography>
+                        </Stack>
+                      </Box>
+                      <CardMedia>
+                        <Box
+                          component="img"
+                          sx={{
+                            width: isViewingItinerary ? 1 : 150,
+                            height: isViewingItinerary ? 200 : 1,
+                            objectFit: "cover",
+                          }}
+                          src={photos[data.id]}
+                        />
+                      </CardMedia>
+                      <Box>
+                        <List>
+                          {isViewingItinerary &&
+                            data.description.split(",")?.map((item, i) => (
+                              <ListItem
+                                sx={{
+                                  borderBottom: "1px solid",
+                                  borderColor: "divider",
+                                }}
+                                key={i}
+                              >
+                                {item}
+                              </ListItem>
+                            ))}
+                        </List>
+                      </Box>
+                    </CardActionArea>
+                    {data.id == activeLocation && !isViewingItinerary && (
+                      <Button
+                        onClick={handleViewItinerary}
+                        fullWidth
+                        variant="contained"
+                        color="primary"
                         sx={{
-                          width: isViewingItinerary ? 1 : 150,
-                          height: isViewingItinerary ? 200 : 1,
-                          objectFit: "cover",
+                          borderRadius: 0,
+                          // bgcolor: "grey.900",
+                          "&:hover": {
+                            // bgcolor: "grey.800",
+                          },
                         }}
-                        src={photos[i]}
-                      />
-                    </CardMedia>
-                    <Box>
-                      <List>
-                        {isViewingItinerary &&
-                          data.itinerary?.map((item, i) => (
-                            <ListItem key={i}>
-                              {i + 1}. {item.description}
-                            </ListItem>
-                          ))}
-                      </List>
-                    </Box>
-                  </CardActionArea>
-                  {data.id == activeLocation && !isViewingItinerary && (
-                    <Button
-                      onClick={handleViewItinerary}
-                      fullWidth
-                      variant="contained"
-                      color="primary"
-                      sx={{
-                        borderRadius: 0,
-                        // bgcolor: "grey.900",
-                        "&:hover": {
-                          // bgcolor: "grey.800",
-                        },
-                      }}
-                      endIcon={<ListBullets />}
-                    >
-                      View Itinerary
-                    </Button>
-                  )}
-                </Card>
-              </motion.div>
-            ))}
+                        endIcon={<ListBullets />}
+                      >
+                        View Itinerary
+                      </Button>
+                    )}
+                  </Card>
+                </motion.div>
+              ))}
         </LayoutGroup>
       </Box>
     </>
   );
 };
 
-const Map: React.FC<{ center: LngLatLike; height: string }> = ({
+const Map: React.FC<{ center: LngLatLike; height: string; result: any }> = ({
   center,
   height,
+  result,
 }) => {
   const { map } = useMap();
 
@@ -267,37 +282,38 @@ const Map: React.FC<{ center: LngLatLike; height: string }> = ({
       id="map"
       mapStyle="mapbox://styles/mapbox/light-v11"
     >
-      {dummyData.map((data) => (
-        <Marker
-          key={data.id}
-          longitude={data.coordinates[1]}
-          latitude={data.coordinates[0]}
-        >
-          <Box
-            sx={{
-              width: 0,
-              height: 0,
-              "& span": {
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                boxSizing: "border-box",
-                width: 30,
-                height: 30,
-                color: "error.main",
-                borderRadius: "50%",
-                cursor: "pointer",
-                transformOrigin: "0 0",
-                transform: "translate(-50%, -30px)",
-              },
-            }}
+      {result &&
+        (result as any).map((data: any) => (
+          <Marker
+            key={data.id}
+            longitude={data.position[0]}
+            latitude={data.position[1]}
           >
-            <span>
-              <MapPin weight="fill" size={30} />
-            </span>
-          </Box>
-        </Marker>
-      ))}
+            <Box
+              sx={{
+                width: 0,
+                height: 0,
+                "& span": {
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  boxSizing: "border-box",
+                  width: 30,
+                  height: 30,
+                  color: "error.main",
+                  borderRadius: "50%",
+                  cursor: "pointer",
+                  transformOrigin: "0 0",
+                  transform: "translate(-50%, -30px)",
+                },
+              }}
+            >
+              <span>
+                <MapPin weight="fill" size={30} />
+              </span>
+            </Box>
+          </Marker>
+        ))}
     </GLMap>
   );
 };

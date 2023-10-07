@@ -63,8 +63,11 @@ const HeaderTravelInput: React.FC = () => {
     setFormState(updatedFormState);
   };
 
-  const onFormSuccess = () => {
+  const [data, setData] = useState(null);
+
+  const onFormSuccess = (data: any) => {
     setFormStep(1);
+    setData(data);
   };
 
   return (
@@ -77,7 +80,7 @@ const HeaderTravelInput: React.FC = () => {
         />
       </Box>
 
-      {formStep == 1 && <PlannerMap />}
+      {data && <PlannerMap data={data} />}
     </>
   );
 };

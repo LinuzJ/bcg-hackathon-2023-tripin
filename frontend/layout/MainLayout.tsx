@@ -31,7 +31,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         <Typography variant="h3">{"Trip'in"}</Typography>
       </Box>
       {/* Content */}
-      <Box>{children}</Box>
+      <Box sx={{ maxWidth: 400, margin: "0 auto" }}>{children}</Box>
     </>
   );
 };
