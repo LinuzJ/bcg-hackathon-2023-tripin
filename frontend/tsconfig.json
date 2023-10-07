@@ -17,6 +17,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "api/audio.ts.old"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "api/audio.ts"],
   "exclude": ["node_modules"]
 }

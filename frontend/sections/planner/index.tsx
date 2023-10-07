@@ -5,7 +5,6 @@ import { Alert, Box } from "@mui/material";
 import { useState } from "react";
 import PlannerForm from "./PlannerForm";
 import PlannerMap from "./PlannerMap";
-import { error } from "console";
 
 export interface FormStateProps {
   starting_position: PlaceType;

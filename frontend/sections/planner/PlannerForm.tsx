@@ -1,37 +1,34 @@
-import { use, useState } from "react";
-import { FormStateProps } from ".";
+import AnimatedLogo from "@/components/AnimatedLogo";
 import GoogleMaps from "@/components/GoogleMaps";
 import {
   Accordion,
-  AccordionSummary,
-  Typography,
   AccordionDetails,
-  Stack,
-  FormControl,
-  ToggleButtonGroup,
-  ToggleButton,
+  AccordionSummary,
   Box,
+  Button,
+  FormControl,
   Grid,
   Slider,
-  Button,
-  CircularProgress,
+  Stack,
+  ToggleButton,
+  ToggleButtonGroup,
+  Typography,
 } from "@mui/material";
 import {
-  TreePalm,
-  Cactus,
-  TreeEvergreen,
   AppleLogo,
-  Church,
-  SneakerMove,
-  Mountains,
-  Snowflake,
   Bed,
+  Cactus,
   CaretDown,
-  Robot,
-  Brain,
+  Church,
+  Mountains,
+  SneakerMove,
+  Snowflake,
+  TreeEvergreen,
+  TreePalm,
 } from "@phosphor-icons/react";
 import axios from "axios";
-import AnimatedLogo from "@/components/AnimatedLogo";
+import { useState } from "react";
+import { FormStateProps } from ".";
 
 const climates = [
   { id: "tropical", name: "Tropical", icon: TreePalm },
