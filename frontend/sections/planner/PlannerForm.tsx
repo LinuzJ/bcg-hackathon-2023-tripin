@@ -32,7 +32,6 @@ import {
 } from "@phosphor-icons/react";
 import axios from "axios";
 import AnimatedLogo from "@/components/AnimatedLogo";
-import getAudio from "@/api/audio";
 
 const climates = [
   { id: "tropical", name: "Tropical", icon: TreePalm },
@@ -87,7 +86,7 @@ const PlannerForm: React.FC<PlannerForm> = ({
     const data = {
       starting_position:
         formState.starting_position.structured_formatting.main_text,
-      activity: formState.activity[0],
+      activity: formState.activity.join(", "),
       climate: formState.climate,
       budget: formState.budget[1],
       time_of_year: formState.time_of_year,

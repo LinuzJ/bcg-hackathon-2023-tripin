@@ -21,9 +21,17 @@ const getAudio = async (data: Data) => {
     "Access-Control-Allow-Origin": "*",
   };
 
-  const audio = await axios.post(AUDIO_API, data, { headers });
+  const response = await axios.post(AUDIO_API, data, { headers });
 
-  console.log(audio);
+  if (response && response.data) {
+    const audioContext = new AudioContext();
+    const arr = Uint32Array.from(response.data);
+    const audio = await audioContext.decodeAudioData(arr.buffer);
+    const source = audioContext.createBufferSource();
+    source.buffer = audio;
+    source.connect(audioContext.destination);
+    source.start(0);
+  }
 };
 
 export default getAudio;

@@ -28,7 +28,6 @@ import {
 } from "@phosphor-icons/react";
 import { LayoutGroup, motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
-import getAudio from "@/api/audio";
 import { FormStateProps } from ".";
 
 const dummyData = [
@@ -131,15 +130,15 @@ const PlannerMap: React.FC<{ data: any; formState: FormStateProps }> = ({
       };
       getPhotos();
 
-      getAudio({
-        budget: formState.budget[1] + "",
-        time_of_year: formState.time_of_year,
-        starting_position:
-          formState.starting_position.structured_formatting.main_text,
-        climate: formState.climate,
-        duration: formState.duration + "",
-        destinations: input.map((d) => d.name),
-      });
+      // getAudio({
+      //   budget: formState.budget[1] + "",
+      //   time_of_year: formState.time_of_year,
+      //   starting_position:
+      //     formState.starting_position.structured_formatting.main_text,
+      //   climate: formState.climate,
+      //   duration: formState.duration + "",
+      //   destinations: input.map((d) => d.name),
+      // });
     }
   }, [data]);
 
