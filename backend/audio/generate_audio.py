@@ -30,7 +30,7 @@ def generate_audio(inputs = schema, stream_audio = True):
     duration = inputs["duration"] 
     time_of_year = inputs["time_of_year"] 
     budget = inputs["budget"] 
-    chosen_destinations = inputs["destination"]
+    chosen_destinations = inputs["destinations"]
 
     # Text to speech
     text = f"You asked for a trip from {starting_position}, to a {climate} climate, lasting {duration} weeks and you would like to travel in {time_of_year}. I'll see what I can do... According to my calculations three possible destinations with a budget of {budget} euros are {chosen_destinations[0]}, {chosen_destinations[1]} and {chosen_destinations[2]}"
