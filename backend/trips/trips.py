@@ -1,4 +1,3 @@
-from utils.distance import get_maps_distance_location_params
 from utils.distance import get_distance
 from utils.helpers import get_coordinates
 from costs.calculate import calculate_cost

@@ -9,6 +9,8 @@ For mac:
 
 > sudo installer -pkg ./AWSCLIV2.pkg -target /
 
+on Mac install brew install portaudio
+
 Command line:
 "aws configure"
 id: "AKIARPUX6LFARFDTOQFY"

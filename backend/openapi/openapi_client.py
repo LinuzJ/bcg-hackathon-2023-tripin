@@ -67,35 +67,89 @@ def fetch_trips(agreed_input):
                         "start_airport": "(closest airport to the start) (string IATA code)",
                         "end_airport": "(closest airport to the destination) (string IATA code)",
                         "travel_time": "(travel time to destination) (integer(in hours))",
-                        "description": f"Day 1: ... , Day 2: ... , Day 3: ..., Day 4: ..., ... (all remaining days, day by day) (string)",
+                        "travel_distance": "(travel distance to destination) (integer(in kilometres))",
+                        "description": f"Day 1: ... , Day 2: ... , Day 3: ..., Day 4: ..., ... (all remaining {duration_days} days of the vacation, day by day: Day 5, ...) (string)",
                     }
                 ]
             }
         ]
 
+        # Definition of our local function(s).
+        # This is effectively telling ChatGPT what we're going to use its JSON output for.
+
+        functions = [
+            {
+                "name": "write_post",
+                "description": "Shows name, position, transportation, start/end airport, travel time and description of 3 trips.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "trips": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "description": "Destination name."
+                                    },
+                                    "position": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "number",
+                                            "description": "Longitude and latitude coordinates."
+                                        },
+                                        "description": "Position coordinates [longitude, latitude]."
+                                    },
+                                    "transportation": {
+                                        "type": "string",
+                                        "description": "Transportation mode (DRIVE/PLANE/TRANSIT)."
+                                    },
+                                    "start_airport": {
+                                        "type": "string",
+                                        "description": "Closest airport to the start (string IATA code)."
+                                    },
+                                    "end_airport": {
+                                        "type": "string",
+                                        "description": "Closest airport to the destination (string IATA code)."
+                                    },
+                                    "travel_time": {
+                                        "type": "integer",
+                                        "description": "Travel time to destination (in hours)."
+                                    },
+                                    "travel_distance": {
+                                        "type": "integer",
+                                        "description": "Travel distance to destination (in kilometres)."
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "description": f"Travel description for every day of the trip.(Day 1: ..., Day 2:..., Day 3 ..., then all remaining {duration_days} days of the trip, day by day)"
+                                    }
+                                }
+                            },
+                            "description": "List of trips."
+                            },
+                        }
+                    }
+                }]
+
         output_json_str = json.dumps(output_json, indent=4)
 
-        prompt = f"Please output only a JSON file describing a trip and activities according to my {budget} budget in {time_of_year} starting from {starting_position} with a low travel time. The trip should last {duration} weeks. I want to do a mix of {activity} activities. Find activities according to my budget. \n Do this for the following 3 destinations: {str_chosen_destinations}. \n Strict condition 1: I want activities for the complete {duration_days} days. \nStrict condition 2: Output it in exactly this JSON format:\n\n ”trips: [ {{\"name: \", \"position: \", \"transportation: \", \"start_airport: \", \"end_airport: \", \"travel_time: \",  \"Description of activities: \"}}  , ...]\n \n \"transportation\" should be only \"DRIVE\", \"PLANE\", \"TRANSIT\" \n Output Example JSON with the datatypes in brackets:\n{output_json_str} \n"
+        prompt = f"Please output only a JSON file describing a trip and activities according to my {budget} budget in {time_of_year} starting from {starting_position} with a low travel time. The trip should last {duration} weeks. I want to do a mix of {activity} activities. Find activities according to my budget. \n Do this for the following 3 destinations: {str_chosen_destinations}. \n Strict condition 1: I want activities for the complete {duration_days} days. \nStrict condition 2: Output it in exactly this JSON format:\n\n ”trips: [ {{\"name: \", \"position: \", \"transportation: \", \"start_airport: \", \"end_airport: \", \"travel_time: \",  \"travel_distance: \",   \"Description of activities: \"}}  , ...]\n \n \"transportation\" should be only \"DRIVE\", \"PLANE\", \"TRANSIT\" \n Output Example JSON with the datatypes in brackets:\n{output_json_str} \n"
 
         # Call OpenAPI
 
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": f"{prompt}"}])
+            messages=[{"role": "user", "content": f"{prompt}"}],
+            functions = functions,
+            function_call = {
+                "name": functions[0]["name"]
+            })
 
-        output = json.loads(response['choices'][0]['message']['content'])
+        #print(response['choices'][0]['message']['function_call']['arguments'])
+        output = json.loads(response['choices'][0]['message']['function_call']['arguments'])
 
-        # Get output in agreed JSON and return
-        # """template_return = {
-        #         "trips": [
-        #             {
-        #                 "position": [40.0, 60.0],
-        #                 "name": "template",
-        #                 "description": "template",
-        #                 "transportation": "PLANE"
-        #             },
-        #         ]
-        #     }"""
         end = time.time()
         print("OPENAPI EXECUTION TIME:", end - start)
         return output

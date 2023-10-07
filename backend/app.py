@@ -40,7 +40,8 @@ def generate():
         audiofile = audio_generation(data)
         
         # Send the temporary file as a response
-        return send_file(audiofile, as_attachment=True, mimetype='audio/mpeg', download_name='output.mp3')
+        # return send_file(audiofile, as_attachment=True, mimetype='audio/mpeg', download_name='output.mp3')
+        return audiofile
     except Exception as e:
         print("ERROR WHILE GENERATING AUDIO!!", e)
         return jsonify({"error": e}), 501

@@ -1,6 +1,5 @@
 import requests
 from datetime import datetime
-from utils.distance import get_distance
 
 
 def calculate_cost(distance, travel_mode: str, start_airport="JFK", end_airport="LAX"):
@@ -8,7 +7,7 @@ def calculate_cost(distance, travel_mode: str, start_airport="JFK", end_airport=
         return _car_cost(distance)
     if travel_mode == "PLANE":
         return _plane_cost(start_airport, end_airport)
-    if travel_mode == "TRANSIT":
+    if travel_mode == "TRANSIT" or travel_mode=="TRAIN":
         return _train_cost(distance)
 
 
@@ -16,11 +15,9 @@ def _car_cost(distance: float) -> float:
     # Simple gas price * distance type calculation
     return distance*1.5
 
-
 def _train_cost(distance: float) -> float:
     # Utilize some external API to calculate train prices from location to destination
     return distance*0.5
-
 
 def _plane_cost(start_airport, end_airport) -> float:
     # Utilize some external API to calculate flight prices from location to destination
@@ -33,7 +30,7 @@ def _plane_cost(start_airport, end_airport) -> float:
         return None
 
 
-def _get_flight_prices(origin, destination, date):
+def _get_flight_prices(origin, destination, max_retrires=0):
     base_url = "https://partners.api.skyscanner.net/apiservices/v3/flights/indicative/search"
 
     headers = {
@@ -70,15 +67,15 @@ def _get_flight_prices(origin, destination, date):
         data = response.json()["content"]
         quotes = data['results']['quotes']
     except Exception as e:
-        print("ERROR: ", e)
-        print("CALLING SKYSCANNER AGAIN!")
-        response = requests.post(base_url, headers=headers, json=data)
-        data = response.json()["content"]
-        quotes = data['results']['quotes']
+        print(e)
+        if max_retrires > 3:
+            _get_flight_prices(origin, destination, max_retrires+1)
+        else:
+            return None
 
     # Finding the cheapest quote based on minPrice
     cheapest_quote = min(
         quotes.values(), key=lambda x: int(x['minPrice']['amount']))
     cheapest_price = cheapest_quote['minPrice']['amount']
 
-    return cheapest_price
+    return float(cheapest_price)
