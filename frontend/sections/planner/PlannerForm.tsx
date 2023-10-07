@@ -32,6 +32,7 @@ import {
 } from "@phosphor-icons/react";
 import axios from "axios";
 import AnimatedLogo from "@/components/AnimatedLogo";
+import getAudio from "@/api/audio";
 
 const climates = [
   { id: "tropical", name: "Tropical", icon: TreePalm },
@@ -67,15 +68,18 @@ type PlannerForm = {
     newValue: FormStateProps[keyof FormStateProps]
   ) => void;
   onSuccess: (data: any) => void;
+  isLoading: boolean;
+  setIsLoading: (data: boolean) => void;
 };
 
 const PlannerForm: React.FC<PlannerForm> = ({
   formState,
   onFormStateChange,
   onSuccess,
+  isLoading,
+  setIsLoading,
 }) => {
   const [travelInputOpen, setTravelInputOpen] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmission = async () => {
     setTravelInputOpen(false);

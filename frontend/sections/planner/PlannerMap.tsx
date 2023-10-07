@@ -28,6 +28,8 @@ import {
 } from "@phosphor-icons/react";
 import { LayoutGroup, motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
+import getAudio from "@/api/audio";
+import { FormStateProps } from ".";
 
 const dummyData = [
   {
@@ -83,7 +85,10 @@ const dummyData = [
   },
 ];
 
-const PlannerMap: React.FC<{ data: any }> = ({ data }) => {
+const PlannerMap: React.FC<{ data: any; formState: FormStateProps }> = ({
+  data,
+  formState,
+}) => {
   const [center, setCenter] = useState<LngLatLike>([6.953101, 50.935173]);
   const [activeLocation, setActiveLocation] = useState<number>(0);
   const [isViewingItinerary, setIsViewingItinerary] = useState(false);
@@ -125,6 +130,16 @@ const PlannerMap: React.FC<{ data: any }> = ({ data }) => {
         setPhotos(photoArray.map((photo) => photo ?? ""));
       };
       getPhotos();
+
+      getAudio({
+        budget: formState.budget[1] + "",
+        time_of_year: formState.time_of_year,
+        starting_position:
+          formState.starting_position.structured_formatting.main_text,
+        climate: formState.climate,
+        duration: formState.duration + "",
+        destinations: input.map((d) => d.name),
+      });
     }
   }, [data]);
 

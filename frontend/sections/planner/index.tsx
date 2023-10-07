@@ -71,7 +71,7 @@ const HeaderTravelInput: React.FC = () => {
   const [data, setData] = useState(null);
 
   const onFormSuccess = (data: any) => {
-    if (data == "error") {
+    if (data == "error" && !data) {
       setShowError(true);
       return;
     }
@@ -86,6 +86,8 @@ const HeaderTravelInput: React.FC = () => {
           formState={formState}
           onFormStateChange={onFormStateChange}
           onSuccess={onFormSuccess}
+          isLoading={loading}
+          setIsLoading={setIsLoading}
         />
       </Box>
 
@@ -95,7 +97,7 @@ const HeaderTravelInput: React.FC = () => {
         </Alert>
       )}
 
-      {data && <PlannerMap data={data} />}
+      {data && !loading && <PlannerMap formState={formState} data={data} />}
     </>
   );
 };
