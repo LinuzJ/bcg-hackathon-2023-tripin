@@ -1,7 +1,8 @@
 from audio.audio_client import audio_generation
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file, send_from_directory
 from trips.trips import generate_trips
 from flask_cors import CORS, cross_origin
+import tempfile
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -31,17 +32,18 @@ def trips():
     return jsonify(response), 501
 
 @app.route('/generate-summary-audio', methods=['POST'])
-@cross_origin
+@cross_origin()
 def generate():
     data = request.json 
 
     try:
         audiofile = audio_generation(data)
-        return audiofile
+        
+        # Send the temporary file as a response
+        return send_file(audiofile, as_attachment=True, mimetype='audio/mpeg', download_name='output.mp3')
     except Exception as e:
         print("ERROR WHILE GENERATING AUDIO!!", e)
-
-        return jsonify(response), 501
+        return jsonify({"error": e}), 501
 
 if __name__ == '__main__':
     app.run(port=8000, debug=True)
