@@ -3,8 +3,7 @@ from datetime import datetime
 from utils.distance import get_distance
 
 
-def calculate_cost(start: tuple[float], end: tuple[float], travel_mode: str, start_airport="JFK", end_airport="LAX"):
-    distance = get_distance(start[0], start[1], end[0], end[1], travel_mode)
+def calculate_cost(distance, travel_mode: str, start_airport="JFK", end_airport="LAX"):
     if travel_mode == "DRIVE":
         return _car_cost(distance)
     if travel_mode == "PLANE":
