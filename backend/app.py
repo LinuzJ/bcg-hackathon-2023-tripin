@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify, send_file, send_from_directory
 from trips.trips import generate_trips
 from flask_cors import CORS, cross_origin
 import tempfile
+import json
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -15,6 +16,9 @@ def trips():
     try:
         data = request.json
 
+        print("----NEW TRIP REQUEST----")
+        pretty_data = json.dumps(data, indent=4)
+        print(pretty_data)
         # Generate trips
         trips = generate_trips(data)
 
@@ -22,6 +26,10 @@ def trips():
             'message': 'Trip generated successfully!',
             'data': trips
         }
+
+        print("----NEW TRIP RESPONSE----")
+        pretty_response = json.dumps(response, indent=4)
+        print(pretty_response)
 
         return jsonify(response), 200
     except:

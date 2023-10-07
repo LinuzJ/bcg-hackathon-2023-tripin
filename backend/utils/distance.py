@@ -13,8 +13,6 @@ def get_distance(start_lat, start_long, end_lat, end_long, travel_mode: str, sta
     return distance
 
 def get_maps_distance_location_params(start, end):
-    print(start)
-    print(end)
     base_url = "https://maps.googleapis.com/maps/api/directions/json?"
     params = {
         "origin": start,
@@ -33,5 +31,4 @@ def get_maps_distance_location_params(start, end):
                 "duration": route['legs'][0]['duration']['text'],
             }
             routes.append(route_info)
-        print(routes[0]["distance"].split(" ")[0].replace(",", ""))
         return float(routes[0]["distance"].split(" ")[0].replace(",", ""))

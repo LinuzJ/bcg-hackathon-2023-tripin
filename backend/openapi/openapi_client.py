@@ -151,11 +151,9 @@ def fetch_trips(agreed_input):
         output = json.loads(response['choices'][0]['message']['function_call']['arguments'])
 
         end = time.time()
-        print("OPENAPI EXECUTION TIME:", end - start)
         return output
     except json.JSONDecodeError:
         # Handle JSON decoding error, for example, by retrying the function
-        print("Error decoding JSON. Retrying...")
         return fetch_trips(agreed_input)
     except Exception as e:
         # Handle other exceptions if necessary
