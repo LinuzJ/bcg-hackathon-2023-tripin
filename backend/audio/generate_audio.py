@@ -1,5 +1,6 @@
 import boto3
 import pyaudio
+from pydub import AudioSegment
 
 import wave
 import io
@@ -42,4 +43,22 @@ def generate_audio(inputs, stream_audio = True):
         stream.close()
         audio_player.terminate()
     else:
-        return data
+
+        # Assuming `data` contains the audio data in PCM format
+        pcm_audio = AudioSegment(
+            data=data,
+            sample_width=2,  # 16-bit audio
+            frame_rate=16000,
+            channels=1  # Mono audio
+        )
+
+        # Save to a temporary WAV file
+        temp_wav_file = "temp.wav"
+        pcm_audio.export(temp_wav_file, format="wav")
+
+        # Convert the WAV file to MP3
+        mp3_audio = AudioSegment.from_wav(temp_wav_file)
+        mp3_audio.export("output.mp3", format="mp3")
+        return mp3_audio
+
+# generate_audio({"1":1}, False)
