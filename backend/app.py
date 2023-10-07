@@ -10,18 +10,24 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 @app.route('/generate-trips', methods=['POST'])
 @cross_origin()
 def trips():
-    data = request.json
+    try:
+        data = request.json
 
-    # Generate trips
-    trips = generate_trips(data)
+        # Generate trips
+        trips = generate_trips(data)
 
-    response = {
-        'message': 'Trip generated successfully!',
-        'data': trips
-    }
+        response = {
+            'message': 'Trip generated successfully!',
+            'data': trips
+        }
 
-    return jsonify(response), 200
+        return jsonify(response), 200
+    except:
+        response = {
+            'message': 'Something went wrong! Plase try again',
+        }
 
+        return jsonify(response), 501
 
 if __name__ == '__main__':
     app.run(port=8000, debug=True)
