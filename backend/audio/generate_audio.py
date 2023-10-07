@@ -57,8 +57,9 @@ def generate_audio(inputs, stream_audio = True):
         pcm_audio.export(temp_wav_file, format="wav")
 
         # Convert the WAV file to MP3
+        filename = "output.mp3"
         mp3_audio = AudioSegment.from_wav(temp_wav_file)
-        mp3_audio.export("output.mp3", format="mp3")
-        return mp3_audio
+        mp3_audio.export(filename, format="mp3")
+        return filename
 
 # generate_audio({"1":1}, False)
