@@ -138,7 +138,8 @@ def fetch_trips(agreed_input):
         prompt = f"Please output only a JSON file describing a trip and activities according to my {budget} budget in {time_of_year} starting from {starting_position} with a low travel time. The trip should last {duration} weeks. I want to do a mix of {activity} activities. Find activities according to my budget. \n Do this for the following 3 destinations: {str_chosen_destinations}. \n Strict condition 1: I want activities for the complete {duration_days} days. \nStrict condition 2: Output it in exactly this JSON format:\n\n ”trips: [ {{\"name: \", \"position: \", \"transportation: \", \"start_airport: \", \"end_airport: \", \"travel_time: \",  \"travel_distance: \",   \"Description of activities: \"}}  , ...]\n \n \"transportation\" should be only \"DRIVE\", \"PLANE\", \"TRANSIT\" \n Output Example JSON with the datatypes in brackets:\n{output_json_str} \n"
 
         # Call OpenAPI
-
+        print("---ChatGPT Prompt---")
+        print(prompt)
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": f"{prompt}"}],
