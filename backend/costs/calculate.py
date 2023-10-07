@@ -67,7 +67,6 @@ def _get_flight_prices(origin, destination, max_retrires=0):
         data = response.json()["content"]
         quotes = data['results']['quotes']
     except Exception as e:
-        print(e)
         if max_retrires > 3:
             _get_flight_prices(origin, destination, max_retrires+1)
         else:

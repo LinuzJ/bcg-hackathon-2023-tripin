@@ -28,7 +28,6 @@ def generate_trips(input, max_retries=0):
             trip["cost"] = cost
 
     except Exception as e:
-        print(e)
         if max_retries > 3:
             raise Exception
         else:
