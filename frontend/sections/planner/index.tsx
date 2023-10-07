@@ -89,7 +89,7 @@ const HeaderTravelInput: React.FC = () => {
         />
       </Box>
 
-      {true && (
+      {showError && (
         <Alert severity="warning">
           {"Oops! We trip'd out of bounds, please try again."}
         </Alert>
