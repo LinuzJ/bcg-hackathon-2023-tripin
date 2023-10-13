@@ -3,8 +3,10 @@ import json
 
 import random
 import time
+import os
 
-openai.api_key = "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"
+
+openai.api_key = os.environ.get("OPEN_AI_API_KEY")
 
 # agreed_input = {
 #     "starting_position": "Madrid",
