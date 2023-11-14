@@ -1,4 +1,4 @@
-![image](https://github.com/LinuzJ/bcg-hackathon-2023-tripin/assets/13162902/10925fc2-10b5-4cce-829e-e44470d4ac0b)
+![image](images/trippin.png)
 
 ### OUR VISION
 "At Trip'in, we envisage a future where travel transcends mere exploration, becoming a conscious, sustainable adventure that leaves a positive imprint on our planet. Our mission is to pioneer a new era of eco-conscious smart travel by harnessing cutting-edge Generative AI technology, revolutionizing the way individuals plan their journeys. We are committed to removing the burden of prompt engineering from end-users, ensuring that sustainable travel is accessible and hassle-free for all.
@@ -42,7 +42,7 @@ Optionally display the FE & BE logs within the SSH session
 pm2 logs
 ```
 # App Access - TRIP'IN
-![image](https://github.com/LinuzJ/bcg-hackathon-2023-tripin/assets/13162902/e2cd5524-fd26-4431-b006-14a4e2a22c01)
+![image](images/trippin_qr.png)
 
 
 Access the frontend and start trip'in at the following URL
